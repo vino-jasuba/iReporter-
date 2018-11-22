@@ -4,7 +4,7 @@ body {
     padding: 0;
     margin: 0;
     height: 100%;
-    background: #eef1f4;
+    background: white;
 }
 
 a {
@@ -12,19 +12,20 @@ a {
     color: #222222;
 }
 
-a:hover {
-    text-decoration: underline;
+header {
+    padding: 1.5em 2em;
+    color: #222222;
 }
 
-header {
-    background: linear-gradient(to right, #a25b5b, #692e4c);
-    padding: 1.5em 2em;
+img {
+    width: 320px;
+    height: auto;
 }
 
 header h1 {
     margin-top: 0;
     font-size: 1.6em;
-    }
+}
 
 .container {
     max-width: 1200px;
@@ -51,17 +52,15 @@ header h1 {
     justify-content: space-between;
     font-weight: bold;
     color: white;
-    padding-bottom: 3em;
+}
+
+.header-nav {
+    width: 25em;
+    justify-content: space-between;
 }
 
 .header-top a {
     color: inherit;
-}
-
-
-nav {
-    display: flex;
-    justify-content: center;
 }
 
 nav > a {
@@ -71,17 +70,34 @@ nav > a {
     color: rgba(255, 255, 255, 50)
 }
 
-.card {
+.h-full {
+    height: 100%;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.border-rounded-sm {
+    border-radius: .5em;
+}
+
+.box-shadow-sm {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .12), 0 2px 4px 0 rgba(0, 0, 0, .08);
-    width: 640px;
+}
+
+.content-wrap {
+    height: calc(100vh - 7em)
+}
+
+.card {
     height: auto;
     display: flex;
-    border-radius: .5em;
     background-color: #ffffff;
 }
 
 .card-sm {
-    width: 480px !important;
+    width: 410px !important;
 }
 
 .card-right {
@@ -99,6 +115,14 @@ nav > a {
 .card-left > img {
     width: inherit;
     height: inherit;
+}
+
+.card-top {
+
+}
+
+.card-bottom {
+    
 }
 
 .banner {
@@ -119,33 +143,21 @@ form {
 .form-input > input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 12px 20px;
+    margin-top: 5px;
     display: inline-block;
-    border: 0.2em solid rgba(112, 176, 236, 0.2);
+    border: 1px solid #d5d4d4;
     box-sizing: border-box;
-    border-radius: 0.8em;
+    border-radius: 5px;
+    height: 45px;
 }
 
-.btn {
-    background-color: #ddd;
-    border: none;
-    padding: .8em 3em;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 16px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
+.btn:hover {
+    background-color: #d5d4d4;
+    color: black;
 }
 
 .btn-blue {
     background: rgba(12, 118, 218, 0.8);
-}
-
-.btn:hover{
-    background-color: #0a6be9;
 }
 
 .footer {
@@ -178,12 +190,24 @@ form {
      font-weight: 800;
  }
 
+ .bolder {
+    font-weight: bold;
+ }
+
+ .text-lighter {
+     font-weight: 300;
+ }
+
  .text-normal {
     font-weight: 400;
  }
 
  .text-larger {
      font-size: 1.5rem;
+ }
+
+ .text-largest {
+     font-size: 3em;
  }
 
 
@@ -201,4 +225,56 @@ form {
 
  .white-darker {
      color: #eef1f4;
+ }
+
+ .white {
+     color: white;
+ }
+
+ .black {
+     color: black;
+ }
+
+ .grey-lighter {
+    color: #d6d4d4;
+ }
+
+ .border {
+     border: 1px solid #d6d4d4;
+ }
+
+ .signup-button {
+    padding: 10px 20px;
+    border-radius: 50px;
+ }
+
+ .signup-button:hover {
+    box-shadow: none;
+ }
+
+ .box-shadow {
+    box-shadow: 0 3px 1px -2px rgba(165, 147, 147, 0), 0 2px 2px 0 rgba(181, 168, 168, 0), 0 1px 5px 0 rgba(162, 150, 150, 0.15);
+ }
+
+ .font-monseratt {
+    font-family: 'Montserrat', sans-serif;
+ }
+
+ .fs-1 {
+     font-size: 18px;
+ }
+
+ .bg-white {
+     background-color: white;
+ }
+
+ .bg-black {
+     background-color: black;
+ }
+
+ .tm {
+    height: 3.5em;
+    font-size: 15px;  
+    border-radius: 5px;
+    cursor: pointer; 
  }
