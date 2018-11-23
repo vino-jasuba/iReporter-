@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css">
+    <script src="js/app.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
@@ -21,9 +22,8 @@
                     <h1 class="">iReporter</h1>
         
                     <div class="flex header-nav item-center">
-                        <a href="#" class="black text-normal">Dashboard</a>
-                        <a class="black text-normal" href="#">Red Flags</a>
-                        <a class="black text-normal" href="#">Interventions</a>
+                        <a class="black text-normal" href="dashboard.html">Dashboard</a>
+                        <a class="black text-normal" href="profile.html">Profile</a>
                         <a class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 <div>
                     <div id="profile_update" class="modal">
                         <div class="card card-sm border-rounded-sm box-shadow-sm">
-                            <span onclick="hideModal()" class="close" title="Close Modal">&times;</span>
+                            <span onclick="hideModal('profile_update')" class="close" title="Close Modal">&times;</span>
                             <form class="flex flex-column" action="#" method="POST">
                 
                                 <div class="form-control form-input">
@@ -60,52 +60,62 @@
 
                 <div class="flex flex-start item-center m-4 border-bottom">
                     <div>
-                        <img src="images/profile.png" alt="">
+                        <img class="border-rounded-full m-1" src="images/file.jpg" alt="">
                     </div>
         
                     <div class="h-full">
-                        <div class="px-1 border-right">
+                        <div class="px-1">
                             <label for="name">Name: &nbsp;</label>
                             <span class="font-monseratt">Vincent Jasuba</span>
                         </div>
         
-                        <div class="px-1 border-right">
+                        <div class="px-1">
                             <div>
                                 <label for="email">Email: &nbsp;</label>
                                 <span class="font-monseratt">ovincent7949@gmail.com</span>
                             </div>
                         </div>
                         
-                        <div class="px-1 border-right">
+                        <div class="px-1">
                             <div>
                                 <label for="role">Role: &nbsp;</label>
                                 <span class="font-monseratt">User</span>
                             </div>
                         </div>
                     </div>
-                    <div class="px-1 flex flex-column">
-                        <span>
+                    <div class="px-1 flex flex-column border-left">
+                        <div class="flex flex-column mt-2">
+
                             <a href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
-                        </span>
-                        <span>
+
+                            <div class="flex flex-column">
+                                <span class="font-monseratt mt-1">Accepted: <strong>10</strong></span>
+                                <span class="font-monseratt">Rejected: <strong>2</strong></span>
+                                <span class="font-monseratt">Under Investigation: <strong>1</strong></span>
+                            </div>
+
+                        </div>
+                        <div class="flex flex-column mt-2">
+
                             <a href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
-                        </span>
+
+                            <div class="flex flex-column">
+                                <span class="font-monseratt mt-1">Accepted: <strong>2</strong></span>
+                                <span class="font-monseratt">Rejected: <strong>7</strong></span>
+                                <span class="font-monseratt">Under Investigation: <strong>0</strong></span>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="form-control"> 
-                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt" onclick="showModal()">Update Profile</button>
+                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt" onclick="showModal('profile_update')">Update Profile</button>
                 </div>
             </div>
         </div>
       </div>
       <script>
-          function showModal() { 
-              document.getElementById("profile_update").style.display = 'block';
-          }
-
-          function hideModal() {
-            document.getElementById('profile_update').style.display='none';
-          }
+         
       </script>
   </body>
 </html>
