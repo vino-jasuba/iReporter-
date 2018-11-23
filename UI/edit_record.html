@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+
+<title>iReporter</title>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="css/app.css">
+<script src="js/app.js"></script>
+</head>
+<body>
+    <div>
+        <nav class="p-1">
+            <div class="container">
+                <div class="header-top black">
+                    <h1 class="">iReporter</h1>
+        
+                    <div class="flex header-nav item-center">
+                        <a class="black text-normal" href="dashboard.html">Dashboard</a>
+                        <a class="black text-normal" href="profile.html">Profile</a>
+                        <a class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="flex">
+            <div class="w-quarter content-wrap">
+                <div class="flex flex-column content-left px-3-md pt-6 tab">
+                    <span class="flex flex-wrap pt-2">
+                        <a class="font-monseratt grey-light bold tablinks" href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
+                    </span>
+                    <span class="flex flex-wrap pt-2 tablinks">
+                        <a class="font-monseratt grey-light bold" href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
+                    </span>
+                </div>
+            </div>
+
+            <div class="w-rem bg-grey-lighter flex flex-column">
+                
+                    <div class="flex-container flex-column h-full mt-4 mb-4">
+                        <div class="card card-lg border-rounded-sm box-shadow-sm">
+                            <form class="flex flex-column" action="dashboard.html" method="POST">
+                
+                                <div class="form-control form-input">
+                                    <label class="font-monseratt fs-1" for="email">Title</label>
+                                    <input class="font-monseratt fs-1" type="text" name="title" placeholder="Unmaintained public road">
+                                </div>
+                                <div class="form-control form-input">
+                                    <label for="location" class="font-monseratt fs-1">Location</label>
+                                    <input class="font-monseratt fs-1" name="location" type="text" placeholder="Kahawa Wendani Stage, Nairobi">
+                                </div>
+                                <div class="form-control form-input">
+                                    <label for="record_type" class="font-monseratt">Record Type</label>
+                                    <br>
+                                    <select class="font-monseratt fs-1" name="record_type" id="record_type">
+                                        <option value="red_flag">Red Flag</option>
+                                        <option value="intervention">Intervention</option>
+                                    </select>
+                                </div>
+                                <div class="form-control form-input">
+                                    <label class="font-monseratt fs-1" for="description">Description</label>
+                                    <br>
+                                    <textarea class="font-monseratt fs-1" name="description" id="description" cols="30" rows="10" placeholder="Lorem, ipsum dolor sit amet consectetur adipisicing elit. At eligendi doloribus corporis, earum quos dolore alias laudantium hic autem. Eum saepe tenetur dolor, debitis assumenda quod incidunt libero nemo maiores!"></textarea>
+                                </div>
+                                <div class="form-control form-input">
+                                    <label for="media" class="font-monseratt fs-1">Media</label>
+                                    <input type="file" accept="image/*,video/*" name="media">
+                                </div>
+                            
+                                <div class="form-control"> 
+                                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
