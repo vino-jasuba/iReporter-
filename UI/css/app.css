@@ -27,9 +27,34 @@ header h1 {
     font-size: 1.6em;
 }
 
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 90%;
+    margin: 6em auto;
+    background-color: inherit;
+}
+
+
+th, td {
+    text-align: left;
+    padding: 16px;
+}
+
+td:first-child, th:first-child {
+    border-left: none;
+}
+
+tr:nth-child(even) {
+    background-color: #d6d4d43d;
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 3.5em;
 }
 
 .flex {
@@ -51,11 +76,14 @@ header h1 {
     justify-content: flex-start
 }
 
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
 .header-top {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
-    color: white;
 }
 
 .header-nav {
@@ -82,6 +110,10 @@ nav > a {
     width: 100%;
 }
 
+.d-block {
+    display: block;
+}
+
 .border-rounded-sm {
     border-radius: .5em;
 }
@@ -104,6 +136,15 @@ nav > a {
 
 .content-wrap {
     height: calc(100vh - 7em)
+}
+
+.content-right {
+    text-align: right;
+    width: 177px;
+}
+
+.content-left {
+    text-align: left;
 }
 
 .card {
@@ -172,6 +213,15 @@ form {
     color: black;
 }
 
+.btn-sm {
+    padding: 0 10px;
+    border-radius: 20px;
+}
+
+.btn-sm:hover {
+    background-color: #d5d4d4;
+}
+
 .btn-blue {
     background: rgba(12, 118, 218, 0.8);
 }
@@ -197,6 +247,7 @@ form {
     justify-content: space-evenly;
 }
 
+
 /**
  * Padding stuff
  */
@@ -213,26 +264,67 @@ form {
     padding: 10em;
 }
 
+
+.pt-2 {
+    padding-top: 1.2em;
+}
+
 .pt-6 {
     padding-top: 6em;
 }
 
 .px-12 {
-    padding: 0 12em;
+    padding-left: 12em;
+    padding-right: 12em;
 }
 
 .px-1 {
-    padding: 0 1em; 
+    padding-left: 1em;
+    padding-right: 1em; 
+}
+
+.px-3 {
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.px-3-md {
+    padding-left: 3em;
+    padding-right: 3em;
+}
+.px-sm {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.m-5 {
+    margin: 5em;
+}
+
+.mx-5 {
+    margin-left: 5em;
+    margin-right: 5em;
 }
 
 .mt-4 {
     margin-top: 4em;
 }
 
+.mt-5 {
+    margin-top: 5em;
+}
+
 .mt-6 {
     margin-top: 6em;
 }
 
+.w-quarter {
+    width: 250px;
+}
+
+.w-rem {
+    width: calc(100vw - 250px)
+}
 
 /**
  * Font stuff
@@ -291,6 +383,10 @@ form {
      color: black;
  }
 
+ .grey-light {
+    color: #807b7b;
+ }
+
  .grey-lighter {
     color: #d6d4d4;
  }
@@ -324,12 +420,24 @@ form {
      font-size: 18px;
  }
 
+ .fs-sm {
+    font-size: 1em;
+ }
+
  .bg-white {
      background-color: white;
  }
 
  .bg-black {
      background-color: black;
+ }
+
+ .bg-red {
+     background-color: red;
+ }
+
+ .bg-grey-lighter {
+     background-color: #f4f7f9;
  }
 
  .tm {
