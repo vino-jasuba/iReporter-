@@ -30,7 +30,7 @@
             </div>
         </nav>
 
-        <div class="px-12 mt-6">
+        <div class="px-12 mb-6 mt-2">
             <div class="flex-container flex-column box-shadow-bg">
                 <div>
                     <div id="profile_update" class="modal">
@@ -82,6 +82,12 @@
                                 <span class="font-monseratt">User</span>
                             </div>
                         </div>
+
+                        <div class="px-1">
+                            <div class="form-control"> 
+                                <button class="white w-full bg-black white tm border btn fs-1 font-monseratt" onclick="showModal('profile_update')">Update Profile</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="px-1 flex flex-column border-left">
                         <div class="flex flex-column mt-2">
@@ -108,8 +114,95 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-control"> 
-                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt" onclick="showModal('profile_update')">Update Profile</button>
+                <div class="flex flex-column mt-2 mb-2">
+
+                    <div class="flex justify-end mr-4 mt-2">
+                        <a class="black font-monseratt border signup-button box-shadow bg-blue-lighter" href="new_record.html">New Record</a>
+                    </div>
+                    
+                    <table>
+                        <tr class="font-monseratt fs-sm grey-light">
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th></th>
+                        </tr>
+                        <tr class="font-monseratt fs-sm grey-light">
+                            <td>1</td>
+                            <td>Police officer taking bribe</td>
+                            <td>RF</td>
+                            <td>Mugumoini, Langata</td>
+                            <td>Resolved</td>
+                            <td>12 Aug 2017</td>
+                            <td>
+                                <div class="flex">
+                                    <span class="px-sm">
+                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="#"><i class="fas fa-trash"></i></a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="font-monseratt fs-sm grey-light">
+                            <td>2</td>
+                            <td>Pot holes in main road</td>
+                            <td>IR</td>
+                            <td>Kapkwony, Marsabit</td>
+                            <td>Rejected</td>
+                            <td>07 Jan 2016</td>
+                            <td>
+                                <div class="flex">
+                                    <span class="px-sm">
+                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="#"><i class="fas fa-trash"></i></a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="font-monseratt fs-sm grey-light">
+                            <td>3</td>
+                            <td>Magistrate asking for bribe</td>
+                            <td>RF</td>
+                            <td>Milimani, Nairobi</td>
+                            <td>Draft</td>
+                            <td>21 Nov 2018</td>
+                            <td>
+                                <div class="flex">
+                                    <span class="px-sm">
+                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
+                                    </span>
+                                    <span class="px-sm">
+                                        <a href="#"><i class="fas fa-trash"></i></a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <div class="flex space-between w-full">
+                                    <span class="font-monseratt fs-sm px-3 btn-sm box-shadow"><a href="#">Prev</a></span>
+                                    <span class="font-monseratt fs-sm px-3 btn-sm box-shadow"><a href="#">Next</a></span>
+                                </div>
+                            </td>
+                        </tr>
+    
+                    </table>        
                 </div>
             </div>
         </div>
