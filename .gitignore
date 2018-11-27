@@ -1,1 +1,3 @@
-app/ireporterenv/*
+env/*
+.vscode/
+*pyc
