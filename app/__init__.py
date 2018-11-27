@@ -9,8 +9,8 @@ def create_app():
     app = Flask(__name__)
     api = Api(v1)
 
-    api.add_resource(Incident, '/incidents/red-flags/<int:incident_id>')
-    api.add_resource(IncidentList, '/incidents/red-flags')
+    api.add_resource(Incident, '/red-flags/<int:red_flag_id>')
+    api.add_resource(IncidentList, '/red-flags')
     app.register_blueprint(v1)
 
     return app
