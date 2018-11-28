@@ -19,7 +19,16 @@ class Incident(Resource, ApiResponse):
             return self.respondNotFound()
         
         return incident, 200
+    
+    def patch(self, incident_id):
+        incident = self.db.find(incident_id)
 
+        if not incident: 
+            return self.respondNotFound()
+
+        incident.update(request.get_json())
+
+        return incident, 200 
 
     def delete(self, incident_id):
         deleted_record = self.db.delete(incident_id)
