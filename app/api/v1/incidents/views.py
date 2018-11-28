@@ -19,7 +19,21 @@ class Incident(Resource, ApiResponse):
             return self.respondNotFound()
         
         return incident, 200
-        
+
+
+    def delete(self, incident_id):
+        deleted_record = self.db.delete(incident_id)
+
+        if deleted_record:
+            return {
+                'data': [{
+                    'id': deleted_record['id'],
+                    'message': deleted_record['type'] + ' ' + ' has been deleted'
+                }],
+                'status': 200 
+                }, 200
+        else:
+            return self.respondNotFound()
 
 class IncidentList(Resource):
     
