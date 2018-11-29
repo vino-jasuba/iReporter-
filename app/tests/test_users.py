@@ -1,11 +1,11 @@
 import random
-from unittest import TestCase
+import unittest
 from app import create_app
 from app.api.v1.users.models import user_list 
 
 
 
-class UserTest(TestCase):
+class UserTest(unittest.TestCase):
 
     def setUp(self):
 
@@ -215,4 +215,8 @@ class UserTest(TestCase):
 
         # assert 
         self.assertEqual(400, response.status_code)
-        self.assertEqual('password_confirm field is required', response.get_json()['message']['password_confirm'])
+        self.assertEqual('password_confirm field is required', response.get_json()['message']['password_confirm'])  
+
+
+if __name__ == "__main__":
+    unittest.main()
