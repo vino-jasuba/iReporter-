@@ -89,3 +89,130 @@ class UserTest(TestCase):
         # assert 
         self.assertEqual(200, response.status_code)
         self.assertEqual(target_id, response.get_json()['id'])
+
+    def test_it_validates_email_format(self):
+
+        # act 
+        # make request without lastname
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Kapipi',
+            'email': 'invalid email',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        
+
+        # assert 
+        self.assertEqual(426, response.status_code)
+        self.assertEqual('error, email provided is not a valid email', response.get_json()['message'])
+
+
+    def test_registration_with_duplicate_email_fails(self):
+        # setup 
+        user_list.append({
+            'id': 1,
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Odhiambo',
+            'email': 'user@admin.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        # act 
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'another_user_name',
+            'firstname': 'James',
+            'lastname': 'Karuga',
+            'email': 'user@admin.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        # assert 
+        self.assertEqual(426, response.status_code)
+        self.assertEqual('error, email already in use', response.get_json()['message'])
+
+    def test_registration_with_duplicate_username_fails(self):
+        # setup 
+        user_list.append({
+            'id': 1,
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Odhiambo',
+            'email': 'user@admin.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+         # act 
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+            'firstname': 'James',
+            'lastname': 'Karuga',
+            'email': 'valid@admin.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        # assert 
+        self.assertEqual(426, response.status_code)
+        self.assertEqual('error, username already taken', response.get_json()['message'])
+
+    def test_it_requires_firstname_in_registration_input(self):
+
+        # act 
+        # make request without firstname
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+        })
+
+        # assert 
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('firstname field is required', response.get_json()['message']['firstname'])
+
+    def test_it_requires_lastname_in_registration_input(self):
+
+        # act 
+        # make request without lastname
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+            'firstname': 'Vincent'
+        })
+
+        # assert 
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('lastname field is required', response.get_json()['message']['lastname'])
+   
+    def test_it_requires_email_in_registration_input(self):
+
+        # act 
+        # make request without lastname
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Kapipi'
+        })
+
+        # assert 
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('email field is required', response.get_json()['message']['email'])
+
+
+    def test_it_requires_password_confirmation_in_registration_input(self):
+
+        # act 
+        response = self.client.post('api/v1/auth/register', json={
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Kapipi',
+            'email': 'valid@email.com',
+            'password': 'password'
+        })
+
+        # assert 
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('password_confirm field is required', response.get_json()['message']['password_confirm'])

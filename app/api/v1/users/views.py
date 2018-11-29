@@ -39,7 +39,7 @@ class UserList(Resource, ApiResponse):
         }, 200
 
 
-class Register(Resource):
+class Register(Resource, ApiResponse):
 
     def __init__(self):
         self.db = UserModel()
@@ -64,13 +64,16 @@ class Register(Resource):
         data = self.reqparse.parse_args()
         print(data)
         if data['password'] != data['password_confirm']:
-            return {'message': 'error, passwords do not match', 'status': 426}, 426
+            return self.respondUnprocessibleEntity('passwords do not match')
 
         if not re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", data['email']):
-            return {'message': 'error, email provided is not a valid email', 'status': 426}, 426
+            return self.respondUnprocessibleEntity('email provided is not a valid email')
+
+        if self.db.exists('email', data['email']):
+            return self.respondUnprocessibleEntity('email already in use')
 
         if self.db.exists('username', data['username']):
-            return {'message': 'error, username already taken', 'status': 426}, 426
+            return self.respondUnprocessibleEntity('username already taken')
  
         user = {
             'firstname': data['firstname'],
@@ -88,4 +91,4 @@ class Register(Resource):
 
         response = {'status': 201} 
         response.update(user)
-        return response, 201
+        return response, 201    
