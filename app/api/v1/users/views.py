@@ -1,14 +1,16 @@
+import bcrypt
+import re
+from datetime import datetime
 from flask import request
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 from app.api.v1.common.api_response import ApiResponse
 from .models import UserModel
 
-user_list = []
 
 class User(Resource, ApiResponse):
 
     def __init__(self):
-        self.db = UserModel(user_list)
+        self.db = UserModel()
 
     def get(self, user_id):
         user = self.db.find(user_id)
@@ -19,20 +21,71 @@ class User(Resource, ApiResponse):
         return user, 200
 
     def patch(self, user_id):
-        pass 
+        pass
 
     def delete(self, user_id):
-        pass 
+        pass
 
-        
 
 class UserList(Resource, ApiResponse):
 
     def __init__(self):
-        self.db = UserModel(user_list)
+        self.db = UserModel()
 
     def get(self):
         return {
             'status': 200,
             'data': self.db.all()
-        }, 200 
+        }, 200
+
+
+class Register(Resource):
+
+    def __init__(self):
+        self.db = UserModel()
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument(
+            'firstname', type=str, required=True, help='firstname field is required', location='json')
+        self.reqparse.add_argument(
+            'lastname', type=str, required=True, help='lastname field is required', location='json')
+        self.reqparse.add_argument(
+            'username', type=str, default="", help='username field is required', location='json')
+        self.reqparse.add_argument(
+            'email', type=str, required=True, help='email field is required', location='json')
+        self.reqparse.add_argument(
+            'password', type=str, required=True, help='password field is required', location='json')
+        self.reqparse.add_argument(
+            'password_confirm', type=str, required=True, help='password_confirm field is required', location='json')
+
+    def post(self):
+        data = request.get_json()
+
+        # missing details will get updated on user profile
+        data = self.reqparse.parse_args()
+        print(data)
+        if data['password'] != data['password_confirm']:
+            return {'message': 'error, passwords do not match', 'status': 426}, 426
+
+        if not re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", data['email']):
+            return {'message': 'error, email provided is not a valid email', 'status': 426}, 426
+
+        if self.db.exists('username', data['username']):
+            return {'message': 'error, username already taken', 'status': 426}, 426
+ 
+        user = {
+            'firstname': data['firstname'],
+            'lastname': data['lastname'],
+            'othernames': None,
+            'email': data['email'],
+            'phoneNumber': None,
+            'username': data['username'] if data['username'] else data['email'],
+            'password': (bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())).decode('utf-8'),
+            'registered': datetime.now().strftime('%c'),
+            'isAdmin': False,
+        }
+
+        self.db.save(user)
+
+        response = {'status': 201} 
+        response.update(user)
+        return response, 201

@@ -7,20 +7,18 @@ class Model():
     def all(self):
         return self.collection
 
-
     def save(self, data):
-        
+
         data['id'] = self.__generate_user_id()
 
         self.collection.append(data)
 
-    
     def find(self, id):
 
         for item in self.collection:
             if item['id'] == id:
                 return item
-        
+
         return None
 
     def delete(self, id):
@@ -33,20 +31,24 @@ class Model():
             return item
 
     def where(self, key, value):
-        
+
         self.query = []
 
         for item in self.collection:
             if item[key] == value:
                 self.query.append(item)
-        
+
         return self
+
+    def exists(self, key, value):
+
+        return len(self.where(key, value).get()) > 0
 
     def get(self):
         return self.query
 
     def __generate_user_id(self):
-        
+
         if len(self.collection):
             return self.collection[-1]['id'] + 1
         else:

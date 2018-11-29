@@ -54,7 +54,8 @@ class TestInterventionRecords(unittest.TestCase):
 
         # setup
         # create items
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 1,
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -64,7 +65,8 @@ class TestInterventionRecords(unittest.TestCase):
             "type": "intervention record"
         })
 
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 2,
             "title": "NTSA Officer asking for bribe",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -86,7 +88,8 @@ class TestInterventionRecords(unittest.TestCase):
 
         # setup
         # create items
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 1,
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -96,7 +99,8 @@ class TestInterventionRecords(unittest.TestCase):
             "type": "intervention record"
         })
 
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 2,
             "title": "NTSA Officer asking for bribe",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -120,7 +124,8 @@ class TestInterventionRecords(unittest.TestCase):
 
         # setup
         # create items
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 1,
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -130,7 +135,8 @@ class TestInterventionRecords(unittest.TestCase):
             "type": "intervention record"
         })
 
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 2,
             "title": "NTSA Officer asking for bribe",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -152,7 +158,8 @@ class TestInterventionRecords(unittest.TestCase):
 
         # setup
         # create items
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 1,
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
             "location": {
@@ -189,7 +196,8 @@ class TestInterventionRecords(unittest.TestCase):
     def test_it_deletes_incident_records_by_id(self):
         # setup
         # create items
-        self.client.post('api/v1/incidents', json={
+        incident_list.append({
+            "id": 1,
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
             "location": {
