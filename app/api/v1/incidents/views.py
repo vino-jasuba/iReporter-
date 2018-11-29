@@ -4,12 +4,10 @@ from flask_restful import Api, Resource
 from app.api.v1.common.api_response import ApiResponse
 from .models import IncidentModel
 
-incident_list = [] 
-
 class Incident(Resource, ApiResponse):
     
     def __init__(self):
-        self.db = IncidentModel(incident_list)
+        self.db = IncidentModel()
 
     
     def get(self, incident_id):
@@ -47,7 +45,7 @@ class Incident(Resource, ApiResponse):
 class IncidentList(Resource):
     
     def __init__(self):
-        self.db = IncidentModel(incident_list)
+        self.db = IncidentModel()
     
     def get(self):
         return {
