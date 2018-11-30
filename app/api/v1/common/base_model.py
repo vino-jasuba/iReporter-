@@ -39,6 +39,10 @@ class Model():
             self.collection.remove(item)
             return item
 
+    def clear(self):
+
+        self.collection.clear()
+
     def where(self, key, value):
 
         self.query = []

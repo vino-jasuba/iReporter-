@@ -21,10 +21,29 @@ class User(Resource, ApiResponse):
         return user, 200
 
     def patch(self, user_id):
-        pass
+        user = self.db.find(user_id)
+
+        if not user:
+            return self.respondNotFound()
+
+        self.db.update(user, request.get_json())
+
+        return user, 200
 
     def delete(self, user_id):
-        pass
+
+        deleted_record = self.db.delete(user_id)
+
+        if deleted_record:
+            return {
+                'data': [{
+                    'id': deleted_record['id'],
+                    'message': 'user with id {}'.format(deleted_record['id']) + ' has been deleted'
+                }],
+                'status': 200
+            }, 200
+        else:
+            return self.respondNotFound()
 
 
 class UserList(Resource, ApiResponse):
@@ -74,7 +93,7 @@ class Register(Resource, ApiResponse):
 
         if self.db.exists('username', data['username']):
             return self.respondUnprocessibleEntity('username already taken')
- 
+
         user = {
             'firstname': data['firstname'],
             'lastname': data['lastname'],
@@ -84,11 +103,11 @@ class Register(Resource, ApiResponse):
             'username': data['username'] if data['username'] else data['email'],
             'password': (bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())).decode('utf-8'),
             'registered': datetime.now().strftime('%c'),
-            'isAdmin': False,
+            'isAdmin': False
         }
 
         self.db.save(user)
 
-        response = {'status': 201} 
+        response = {'status': 201}
         response.update(user)
-        return response, 201    
+        return response, 201

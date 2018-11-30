@@ -1,4 +1,4 @@
-
+import datetime
 from flask import request
 from flask_restful import Api, Resource
 from app.api.v1.common.api_response import ApiResponse
@@ -62,11 +62,14 @@ class IncidentList(Resource):
             'type': data['type'],
             'title': data['title'],
             'images': [],
+            'videos': [],
             'description': data['description'],
             'location': {
                 'lat': data['location']['lat'],
                 'lng': data['location']['lng']
-            }
+            },
+            'created_on': datetime.datetime.now().strftime('%c'),
+            'created_by': None # we'll need an authenticated user for this
         }
 
         self.db.save(incident)

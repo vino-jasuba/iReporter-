@@ -1,7 +1,7 @@
 import random
 import unittest
 from app import create_app
-from app.api.v1.users.models import user_list 
+from app.api.v1.users.models import user_list, Model
 
 
 
@@ -89,6 +89,41 @@ class UserTest(unittest.TestCase):
         # assert 
         self.assertEqual(200, response.status_code)
         self.assertEqual(target_id, response.get_json()['id'])
+
+    def test_it_updates_user_record(self):
+        
+        user_list.append({
+            'id': 1,
+            'username': 'jasuba',
+            'firstname': 'Vincent',
+            'lastname': 'Odhiambo',
+            'email': 'user@admin.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        user_list.append({
+            'id': 2,
+            'username': 'another',
+            'firstname': 'Gender',
+            'lastname': 'Balance',
+            'email': 'gb@user.com',
+            'password': 'password',
+            'password_confirm': 'password'
+        })
+
+        target_id = random.choice([1, 2])
+        # act 
+        response = self.client.patch('api/v1/users/{}'.format(target_id), json={
+            'email': 'anotheremail@gmail.com'
+        })
+
+        # assert 
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('anotheremail@gmail.com', response.get_json()['email'])
+        self.assertIsNotNone(Model(user_list).find(target_id))
+        self.assertEqual(Model(user_list).find(target_id), response.get_json())
+        
 
     def test_it_validates_email_format(self):
 
@@ -182,7 +217,7 @@ class UserTest(unittest.TestCase):
             'username': 'jasuba',
             'firstname': 'Vincent'
         })
-
+  
         # assert 
         self.assertEqual(400, response.status_code)
         self.assertEqual('lastname field is required', response.get_json()['message']['lastname'])
