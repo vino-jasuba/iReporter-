@@ -12,7 +12,7 @@ script:
 
 after_success:
  - coveralls 
- - codecov --token=21565470ce7f0d77bb2d6806b7ced906e28297175888c0225c91efc330520bbe
+ - codecov --token=21909f7f21a909b5ab04b94189dd267077a2d84f
   
 after_success:
  - coveralls
