@@ -9,8 +9,7 @@ class UserTest(unittest.TestCase):
 
     def setUp(self):
 
-        app = create_app()
-        app.testing = True 
+        app = create_app('testing')
         self.client = app.test_client() 
 
     def tearDown(self):
