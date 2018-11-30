@@ -1,7 +1,7 @@
 from flask_restful import Api, Resource
 from flask import Blueprint
 from .incidents.views import Incident, IncidentList, IncidenceQuery
-from .users.views import User, UserList
+from .users.views import User, UserList, Register
  
 version_one = Blueprint('api_v1', __name__, url_prefix='/api/v1')
 
@@ -12,3 +12,4 @@ api.add_resource(IncidentList, '/incidents')
 api.add_resource(IncidenceQuery, '/incidents/<string:incident_type>')
 api.add_resource(User, '/users/<int:user_id>')
 api.add_resource(UserList, '/users')
+api.add_resource(Register, '/auth/register')
