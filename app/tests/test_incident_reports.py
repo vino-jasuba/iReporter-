@@ -180,6 +180,34 @@ class TestInterventionRecords(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('changed description message',
                          response.get_json()['description'])
+        self.assertEqual('Damaged roads in Matuu',
+                         response.get_json()['title'])
+
+    def test_updates_to_keys_not_in_model_raises_bad_request_exception(self):
+        # setup
+        incident_list.append({
+            "id": 1,
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "location": {
+                "lat": -1.23121,
+                "lng": 23.45443
+            },
+            "type": "intervention record"
+        })
+        # act
+
+        key = 'wrong_key'
+        value = 'some data'
+        response = self.client.patch('api/v1/incidents/1', json={
+            'description': 'changed description message',
+            key: value
+        })
+
+        # assert
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {
+                         'message': 'update key {} with value {} failed! Key not found in base model'.format(key, value)})
 
     def test_updating_nonexistent_record_fails(self):
         response = self.client.patch('api/v1/incidents/1', json={
@@ -191,7 +219,8 @@ class TestInterventionRecords(unittest.TestCase):
         })
 
         self.assertEqual(404, response.status_code)
-        self.assertEqual({'message': 'resource not found', 'status': 404}, response.get_json())
+        self.assertEqual({'message': 'resource not found',
+                          'status': 404}, response.get_json())
 
     def test_it_deletes_incident_records_by_id(self):
         # setup

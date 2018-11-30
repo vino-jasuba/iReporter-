@@ -1,4 +1,5 @@
 
+from werkzeug.exceptions import BadRequest
 
 class Model():
     def __init__(self, collection_list):
@@ -20,6 +21,14 @@ class Model():
                 return item
 
         return None
+
+    def update(self, model, data):
+
+        for key, value in data.items():
+            if key in model:
+                model.update({key: value})
+            else:
+                raise BadRequest('update key {} with value {} failed! Key not found in base model'.format(key, value))
 
     def delete(self, id):
         item = self.find(id)
