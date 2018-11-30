@@ -6,7 +6,7 @@ autopep8==1.4.3
 bcrypt==3.1.4
 cffi==1.11.5
 Click==7.0
-coverage==4.3
+coverage==4.5.2
 Faker==1.0.0
 Flask==1.0.2
 Flask-RESTful==0.3.6
