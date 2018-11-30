@@ -24,6 +24,7 @@ pycodestyle==2.4.0
 pycparser==2.19
 pylint==2.2.0
 pytest==4.0.1
+pytest-cov==2.6.0
 python-dateutil==2.7.5
 pytz==2018.7
 six==1.11.0
