@@ -4,11 +4,10 @@ from app import create_app
 from app.api.v1.incidents.models import incident_list
 
 
-class TestInterventionRecords(unittest.TestCase):
+class TestIncidentReports(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app()
-        self.app.testing = True
+        self.app = create_app('testing')
         self.client = self.app.test_client()
         self.test_record = {
             "title": "NTSA Officer asking for bribe",
