@@ -10,6 +10,7 @@ coverage==4.5.2
 Faker==1.0.0
 Flask==1.0.2
 Flask-RESTful==0.3.6
+gunicorn==19.9.0
 isort==4.3.4
 itsdangerous==1.1.0
 Jinja2==2.10
