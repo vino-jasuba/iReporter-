@@ -1,8 +1,16 @@
 import datetime
 from flask import request
 from flask_restful import Api, Resource
+from marshmallow import Schema, fields
 from app.api.v1.common.api_response import ApiResponse
 from .models import IncidentModel
+
+
+class IncidentSchema(Schema):
+    incident_type = fields.Str(required=True)
+    title = fields.Str(required=True)
+    description = fields.Str(required=True)
+    location = fields.Dict(required=True)
 
 
 class Incident(Resource, ApiResponse):
@@ -35,7 +43,7 @@ class Incident(Resource, ApiResponse):
             return {
                 'data': [{
                     'id': deleted_record['id'],
-                    'message': deleted_record['type'] + ' ' + ' has been deleted'
+                    'message': deleted_record['incident_type'] + ' ' + ' has been deleted'
                 }],
                 'status': 200
             }, 200
@@ -56,10 +64,13 @@ class IncidentList(Resource):
 
     def post(self):
 
-        data = request.get_json()
+        data, errors = IncidentSchema().load(request.get_json())
+
+        if errors:
+            return errors, 400
 
         incident = {
-            'type': data['type'],
+            'incident_type': data['incident_type'],
             'title': data['title'],
             'images': [],
             'videos': [],
@@ -69,7 +80,7 @@ class IncidentList(Resource):
                 'lng': data['location']['lng']
             },
             'created_on': datetime.datetime.now().strftime('%c'),
-            'created_by': None # we'll need an authenticated user for this
+            'created_by': None  # we'll need an authenticated user for this
         }
 
         self.db.save(incident)
@@ -80,7 +91,7 @@ class IncidentList(Resource):
 class IncidenceQuery(Incident):
 
     def get(self, incident_type):
-        red_flags = self.db.where('type', incident_type).get()
+        red_flags = self.db.where('incident_type', incident_type).get()
 
         return {
             'data': red_flags,

@@ -2,9 +2,19 @@ import bcrypt
 import re
 from datetime import datetime
 from flask import request
+from marshmallow import ValidationError, Schema, fields
 from flask_restful import Api, Resource, reqparse
 from app.api.v1.common.api_response import ApiResponse
 from .models import UserModel
+
+
+class UserSchema(Schema):
+    firstname = fields.Str(required=True)
+    lastname = fields.Str(required=True)
+    username = fields.Str(required=True)
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)
+    password_confirm = fields.Str(required=True)
 
 
 class User(Resource, ApiResponse):
@@ -62,37 +72,22 @@ class Register(Resource, ApiResponse):
 
     def __init__(self):
         self.db = UserModel()
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            'firstname', type=str, required=True, help='firstname field is required', location='json')
-        self.reqparse.add_argument(
-            'lastname', type=str, required=True, help='lastname field is required', location='json')
-        self.reqparse.add_argument(
-            'username', type=str, default="", help='username field is required', location='json')
-        self.reqparse.add_argument(
-            'email', type=str, required=True, help='email field is required', location='json')
-        self.reqparse.add_argument(
-            'password', type=str, required=True, help='password field is required', location='json')
-        self.reqparse.add_argument(
-            'password_confirm', type=str, required=True, help='password_confirm field is required', location='json')
+        self.schema = UserSchema()
 
     def post(self):
         data = request.get_json()
+        schema = UserSchema()
 
-        # missing details will get updated on user profile
-        data = self.reqparse.parse_args()
-        print(data)
-        if data['password'] != data['password_confirm']:
-            return self.respondUnprocessibleEntity('passwords do not match')
+        data, errors = schema.load(data)
 
-        if not re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", data['email']):
-            return self.respondUnprocessibleEntity('email provided is not a valid email')
-
-        if self.db.exists('email', data['email']):
-            return self.respondUnprocessibleEntity('email already in use')
+        if errors:
+            return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
 
         if self.db.exists('username', data['username']):
             return self.respondUnprocessibleEntity('username already taken')
+
+        if self.db.exists('email', data['email']):
+            return self.respondUnprocessibleEntity('email already in use')
 
         user = {
             'firstname': data['firstname'],
@@ -108,6 +103,6 @@ class Register(Resource, ApiResponse):
 
         self.db.save(user)
 
-        response = {'status': 201}
-        response.update(user)
+        response = UserSchema(only=('firstname', 'lastname', 'othernames',
+                                    'email', 'phoneNumber', 'username', 'registered', 'isAdmin')).dump(user)[0]
         return response, 201
