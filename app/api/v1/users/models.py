@@ -5,4 +5,3 @@ user_list = []
 class UserModel(Model):
     def __init__(self):
         super().__init__(user_list)
-        self.guarded = ['password']

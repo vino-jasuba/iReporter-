@@ -25,6 +25,7 @@ class UserTest(unittest.TestCase):
             'password_confirm': 'password'
         })
 
+
         self.assertEqual(201, response.status_code)
         self.assertEqual('jasuba', response.get_json()['username'])
         self.assertNotIn('password', response.get_json())

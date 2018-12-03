@@ -5,16 +5,16 @@ from flask import request
 from marshmallow import ValidationError, Schema, fields
 from flask_restful import Api, Resource, reqparse
 from app.api.v1.common.api_response import ApiResponse
+from app.api.v1.common.validator import email, required
 from .models import UserModel
 
-
 class UserSchema(Schema):
-    firstname = fields.Str(required=True)
-    lastname = fields.Str(required=True)
-    username = fields.Str(required=True)
-    email = fields.Email(required=True)
-    password = fields.Str(required=True)
-    password_confirm = fields.Str(required=True)
+    firstname = fields.Str(required=True, validate=(required))
+    lastname = fields.Str(required=True, validate=(required))
+    username = fields.Str(required=True, validate=(required))
+    email = fields.Email(required=True, validate=(email))
+    password = fields.Str(required=True, validate=(required))
+    password_confirm = fields.Str(required=True, validate=(required))
 
 
 class User(Resource, ApiResponse):
@@ -103,6 +103,5 @@ class Register(Resource, ApiResponse):
 
         self.db.save(user)
 
-        response = UserSchema(only=('firstname', 'lastname', 'othernames',
-                                    'email', 'phoneNumber', 'username', 'registered', 'isAdmin')).dump(user)[0]
+        response = UserSchema(exclude=['password']).dump(user)[0]
         return response, 201

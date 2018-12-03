@@ -3,14 +3,15 @@ from flask import request
 from flask_restful import Api, Resource
 from marshmallow import Schema, fields
 from app.api.v1.common.api_response import ApiResponse
+from app.api.v1.common.validator import required
 from .models import IncidentModel
 
 
 class IncidentSchema(Schema):
-    incident_type = fields.Str(required=True)
-    title = fields.Str(required=True)
-    description = fields.Str(required=True)
-    location = fields.Dict(required=True)
+    incident_type = fields.Str(required=True, validate=(required))
+    title = fields.Str(required=True, validate=(required))
+    description = fields.Str(required=True, validate=(required))
+    location = fields.Dict(required=True, validate=(required))
 
 
 class Incident(Resource, ApiResponse):
@@ -67,7 +68,7 @@ class IncidentList(Resource):
         data, errors = IncidentSchema().load(request.get_json())
 
         if errors:
-            return errors, 400
+            return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
 
         incident = {
             'incident_type': data['incident_type'],
