@@ -19,6 +19,17 @@ class UserSchema(Schema):
     password_confirm = fields.Str(required=True, validate=(required))
 
 
+class UserSchema(Schema):
+    """Represents the schema for users."""
+
+    firstname = fields.Str(required=True, validate=(required))
+    lastname = fields.Str(required=True, validate=(required))
+    username = fields.Str(required=True, validate=(required))
+    email = fields.Email(required=True, validate=(email))
+    password = fields.Str(required=True, validate=(required))
+    password_confirm = fields.Str(required=True, validate=(required))
+
+
 class User(Resource, ApiResponse):
     """Represents a resource class used to interact with user resource
     through HTTP methods. It exposes methods for fetching, updating and deleting items
@@ -131,3 +142,17 @@ class Register(Resource, ApiResponse):
 
         response = UserSchema(exclude=['password']).dump(user)[0]
         return response, 201
+
+
+class Login(Resource, ApiResponse):
+    """Represents a resource class used to register new users.
+    Exposes methods for registering new users."""
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
+    def post(self):
+        """login a user with given credentials"""
+        # TODO: implement jwt auth 
+
+        pass
