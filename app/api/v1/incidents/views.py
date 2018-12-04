@@ -1,16 +1,33 @@
 import datetime
 from flask import request
 from flask_restful import Api, Resource
+from marshmallow import Schema, fields
 from app.api.v1.common.api_response import ApiResponse
+from app.api.v1.common.validator import required
 from .models import IncidentModel
 
 
+class IncidentSchema(Schema):
+    """Represents the schema for incidents."""
+
+    incident_type = fields.Str(required=True, validate=(required))
+    title = fields.Str(required=True, validate=(required))
+    description = fields.Str(required=True, validate=(required))
+    location = fields.Dict(required=True, validate=(required))
+
+
 class Incident(Resource, ApiResponse):
+    """Represents a resource class used to interact with incident reports 
+    through HTTP methods."""
 
     def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
         self.db = IncidentModel()
 
     def get(self, incident_id):
+        """get a resource by id from the model."""
+
         incident = self.db.find(incident_id)
 
         if not incident:
@@ -19,6 +36,8 @@ class Incident(Resource, ApiResponse):
         return incident, 200
 
     def patch(self, incident_id):
+        """update resource with the given id."""
+
         incident = self.db.find(incident_id)
 
         if not incident:
@@ -29,13 +48,15 @@ class Incident(Resource, ApiResponse):
         return incident, 200
 
     def delete(self, incident_id):
+        """remove resource with the given id from the model."""
+
         deleted_record = self.db.delete(incident_id)
 
         if deleted_record:
             return {
                 'data': [{
                     'id': deleted_record['id'],
-                    'message': deleted_record['type'] + ' ' + ' has been deleted'
+                    'message': deleted_record['incident_type'] + ' ' + ' has been deleted'
                 }],
                 'status': 200
             }, 200
@@ -44,22 +65,34 @@ class Incident(Resource, ApiResponse):
 
 
 class IncidentList(Resource):
+    """Represents a resource class used to interact with incident 
+    reports through through HTTP methods."""
 
     def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
         self.db = IncidentModel()
 
     def get(self):
+        """Fetch a list of all records from the model."""
+
         return {
             'status': 200,
             'data': self.db.all()
         }, 200
 
     def post(self):
+        """Create new incident records. The method also performs validation 
+        to ensure all fields required are present.
+        """
 
-        data = request.get_json()
+        data, errors = IncidentSchema().load(request.get_json())
+
+        if errors:
+            return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
 
         incident = {
-            'type': data['type'],
+            'incident_type': data['incident_type'],
             'title': data['title'],
             'images': [],
             'videos': [],
@@ -69,7 +102,7 @@ class IncidentList(Resource):
                 'lng': data['location']['lng']
             },
             'created_on': datetime.datetime.now().strftime('%c'),
-            'created_by': None # we'll need an authenticated user for this
+            'created_by': None  # we'll need an authenticated user for this
         }
 
         self.db.save(incident)
@@ -77,10 +110,18 @@ class IncidentList(Resource):
         return {'message': 'Successfully created incident report'}, 201
 
 
-class IncidenceQuery(Incident):
+class IncidenceQuery(Resource):
+    """Represents a resource class used to interact with incident
+    reports through HTTP methods. It exposes a method for fetching incident records 
+    by the given type string."""
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
+        self.db = IncidentModel()
 
     def get(self, incident_type):
-        red_flags = self.db.where('type', incident_type).get()
+        red_flags = self.db.where('incident_type', incident_type).get()
 
         return {
             'data': red_flags,
