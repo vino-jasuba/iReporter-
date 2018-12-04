@@ -8,6 +8,16 @@ from app.api.v1.common.api_response import ApiResponse
 from app.api.v1.common.validator import email, required
 from .models import UserModel
 
+class UserSchema(Schema):
+    """Represents the schema for users."""
+
+    firstname = fields.Str(required=True, validate=(required))
+    lastname = fields.Str(required=True, validate=(required))
+    username = fields.Str(required=True, validate=(required))
+    email = fields.Email(required=True, validate=(email))
+    password = fields.Str(required=True, validate=(required))
+    password_confirm = fields.Str(required=True, validate=(required))
+
 
 class UserSchema(Schema):
     """Represents the schema for users."""
