@@ -9,6 +9,8 @@ from app.api.v1.common.validator import email, required
 from .models import UserModel
 
 class UserSchema(Schema):
+    """Represents the schema for users."""
+
     firstname = fields.Str(required=True, validate=(required))
     lastname = fields.Str(required=True, validate=(required))
     username = fields.Str(required=True, validate=(required))
@@ -18,11 +20,18 @@ class UserSchema(Schema):
 
 
 class User(Resource, ApiResponse):
+    """Represents a resource class used to interact with user resource
+    through HTTP methods. It exposes methods for fetching, updating and deleting items
+    with given ids."""
 
     def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
         self.db = UserModel()
 
     def get(self, user_id):
+        """get a user resource by id from the model."""
+
         user = self.db.find(user_id)
 
         if not user:
@@ -31,6 +40,8 @@ class User(Resource, ApiResponse):
         return user, 200
 
     def patch(self, user_id):
+        """update user resource with the given id."""
+
         user = self.db.find(user_id)
 
         if not user:
@@ -41,6 +52,7 @@ class User(Resource, ApiResponse):
         return user, 200
 
     def delete(self, user_id):
+        """remove resource with given id from the data store."""
 
         deleted_record = self.db.delete(user_id)
 
@@ -57,11 +69,18 @@ class User(Resource, ApiResponse):
 
 
 class UserList(Resource, ApiResponse):
+    """Represents a resource class used to interact with users 
+    through HTTP methods. Exposes methods for fetching entire 
+    list of users."""
 
     def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
         self.db = UserModel()
 
     def get(self):
+        """fetch all users from the data store."""
+
         return {
             'status': 200,
             'data': self.db.all()
@@ -69,12 +88,19 @@ class UserList(Resource, ApiResponse):
 
 
 class Register(Resource, ApiResponse):
+    """Represents a resource class used to register new users.
+    Exposes methods for registering new users."""
 
     def __init__(self):
+        """Initialize model that the resource should use as well
+        as the schema it should use for validation."""
+
         self.db = UserModel()
         self.schema = UserSchema()
 
     def post(self):
+        """register a new user."""
+
         data = request.get_json()
         schema = UserSchema()
 

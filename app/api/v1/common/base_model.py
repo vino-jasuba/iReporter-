@@ -3,19 +3,25 @@ from werkzeug.exceptions import BadRequest
 
 
 class Model():
-    """Represents the base model that defines connection with 
-       data store
+    """Represents the base model that defines connection with data store
+    classes that communicate with the data store should extend this class
+    to get access to methods for doing common data operations.
     """
 
     def __init__(self, collection_list):
+        """
+        :param collection_list: a list which will serve as the model's data store.
+        """
+
         self.collection = collection_list
 
     def all(self):
-        """Return all items in data store"""
+        """Return all items in data store."""
+
         return self.collection
 
     def save(self, data):
-        """Insert given data into the data store"""
+        """Insert given data into the data store."""
 
         data['id'] = self.__generate_user_id()
 
@@ -23,7 +29,7 @@ class Model():
 
     def find(self, id):
         """Returns data item with id given, 
-           if data is not found, return None
+           if data is not found, return None.
         """
 
         for item in self.collection:
@@ -46,7 +52,7 @@ class Model():
                     'update key {} with value {} failed! Key not found in base model'.format(key, value))
 
     def delete(self, id):
-        """Deletes record with given id"""
+        """Deletes record with given id."""
         item = self.find(id)
 
         if not item:
@@ -56,13 +62,15 @@ class Model():
             return item
 
     def clear(self):
-        """Delete all records from data store"""
+        """Delete all records from data store."""
         self.collection.clear()
 
     def where(self, key, value):
-        """Find items with value 'value' in the given key 'key'
-           it builds a new query list and returns a reference to 
-           the model
+        """
+        :param key: key to check 
+        :param value: the value to search for in given key
+
+        Returns a new list containing the subset of the data found.
         """
         
         self.query = []
@@ -74,14 +82,17 @@ class Model():
         return self
 
     def exists(self, key, value):
-        """Check if there's a record with value 'value' in key 'key'. 
-           Returns True if exists False otherwise
+        """
+        :param key: key to check
+        :param value: value to search for in given key
+
+        Returns boolean, True if it finds at least one record. False otherwise.
         """
         
         return len(self.where(key, value).get()) > 0
 
     def get(self):
-        """Fetch results from query list"""
+        """Fetch results from query list."""
 
         return self.query
 
