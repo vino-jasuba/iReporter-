@@ -8,6 +8,7 @@ from app.api.v1.common.api_response import ApiResponse
 from app.api.v1.common.validator import email, required
 from .models import UserModel
 
+
 class UserSchema(Schema):
     """Represents the schema for users."""
 
@@ -131,3 +132,17 @@ class Register(Resource, ApiResponse):
 
         response = UserSchema(exclude=['password']).dump(user)[0]
         return response, 201
+
+
+class Login(Resource, ApiResponse):
+    """Represents a resource class used to register new users.
+    Exposes methods for registering new users."""
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
+    def post(self):
+        """login a user with given credentials"""
+        # TODO: implement jwt auth 
+
+        pass
