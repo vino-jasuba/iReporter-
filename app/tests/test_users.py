@@ -25,7 +25,6 @@ class UserTest(unittest.TestCase):
             'password_confirm': 'password'
         })
 
-
         self.assertEqual(201, response.status_code)
         self.assertEqual('jasuba', response.get_json()['username'])
         self.assertNotIn('password', response.get_json())
@@ -201,7 +200,8 @@ class UserTest(unittest.TestCase):
         response = self.client.post('api/v1/auth/register', json={})
 
         self.assertEqual(422, response.status_code)
-        self.assertEqual('Invalid data received', response.get_json()['message'])
+        self.assertEqual('Invalid data received',
+                         response.get_json()['message'])
         self.assertEqual({
             'email': ['Missing data for required field.'],
             'firstname': ['Missing data for required field.'],
@@ -209,7 +209,7 @@ class UserTest(unittest.TestCase):
             'password': ['Missing data for required field.'],
             'password_confirm': ['Missing data for required field.'],
             'username': ['Missing data for required field.']
-            }, response.get_json()['errors'])
+        }, response.get_json()['errors'])
 
 
 if __name__ == "__main__":

@@ -110,10 +110,15 @@ class IncidentList(Resource):
         return {'message': 'Successfully created incident report'}, 201
 
 
-class IncidenceQuery(Incident):
+class IncidenceQuery(Resource):
     """Represents a resource class used to interact with incident
     reports through HTTP methods. It exposes a method for fetching incident records 
     by the given type string."""
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
+        self.db = IncidentModel()
 
     def get(self, incident_type):
         red_flags = self.db.where('incident_type', incident_type).get()
