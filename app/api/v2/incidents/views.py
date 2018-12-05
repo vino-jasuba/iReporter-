@@ -1,21 +1,11 @@
 import datetime
 from flask import request
 from flask_restful import Api, Resource
-from marshmallow import Schema, fields
 from app.api.v1.common.api_response import ApiResponse
 from app.api.v1.common.validator import required
 from .models import IncidentModel
 from .schema import IncidentSchema 
 from flask_jwt_extended import jwt_required
-
-class IncidentSchema(Schema):
-    """Represents the schema for incidents."""
-
-    incident_type = fields.Str(required=True, validate=(required))
-    title = fields.Str(required=True, validate=(required))
-    description = fields.Str(required=True, validate=(required))
-    location = fields.Dict(required=True, validate=(required))
-
 
 class Incident(Resource, ApiResponse):
     """Represents a resource class used to interact with incident reports 

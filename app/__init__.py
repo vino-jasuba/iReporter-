@@ -1,4 +1,4 @@
-
+from flask_jwt_extended import JWTManager
 from flask import Flask, Blueprint
 from .api.v1 import version_one as v1
 
@@ -9,4 +9,6 @@ def create_app(config_name):
 
     app = Flask(__name__)
     app.register_blueprint(v1)
+    app.config['SECRET_KEY'] = 'secret'
+    JWTManager(app)
     return app
