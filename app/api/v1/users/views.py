@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from flask import request
+from marshmallow import ValidationError, Schema, fields
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.v1.common.api_response import ApiResponse
@@ -9,6 +10,16 @@ from .models import UserModel
 from .schema import UserSchema
 
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
+
+class UserSchema(Schema):
+    """Represents the schema for users."""
+
+    firstname = fields.Str(required=True, validate=(required))
+    lastname = fields.Str(required=True, validate=(required))
+    username = fields.Str(required=True, validate=(required))
+    email = fields.Email(required=True, validate=(email))
+    password = fields.Str(required=True, validate=(required))
+    password_confirm = fields.Str(required=True, validate=(required))
 
 class User(Resource, ApiResponse):
     """Represents a resource class used to interact with user resource
@@ -95,7 +106,7 @@ class Register(Resource, ApiResponse):
 
     def post(self):
         """register a new user."""
-
+        
         data = request.get_json()
         schema = UserSchema()
 
@@ -134,6 +145,7 @@ class Login(Resource, ApiResponse):
 
     def __init__(self):
         """Initialize resource with a reference to the model it should use."""
+
         self.db = UserModel()
 
     def post(self):
