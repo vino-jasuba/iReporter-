@@ -5,7 +5,7 @@ class Config(object):
     """Parent configuration class."""
     DEBUG = False
     CSRF_ENABLED = True
-    SECRET = os.getenv('SECRET')
+    SECRET = os.getenv('APP_KEY')
 
 
 class DevelopmentConfig(Config):
@@ -32,6 +32,7 @@ class ProductionConfig(Config):
 
 app_config = {
     'development': DevelopmentConfig,
+    'debug': DevelopmentConfig,
     'testing': TestingConfig,
     'staging': StagingConfig,
     'production': ProductionConfig,
