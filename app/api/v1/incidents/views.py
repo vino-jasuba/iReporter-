@@ -1,11 +1,12 @@
 import datetime
 from flask import request
 from flask_restful import Api, Resource
-from app.api.v1.common.api_response import ApiResponse
-from app.api.v1.common.validator import required
+from app.api.utils.api_response import ApiResponse
+from app.api.utils.validator import required
 from .models import IncidentModel
-from .schema import IncidentSchema 
+from .schema import IncidentSchema
 from flask_jwt_extended import jwt_required
+
 
 class Incident(Resource, ApiResponse):
     """Represents a resource class used to interact with incident reports 
@@ -16,7 +17,6 @@ class Incident(Resource, ApiResponse):
 
         self.db = IncidentModel()
 
-    @jwt_required
     def get(self, incident_id):
         """get a resource by id from the model."""
 
@@ -27,7 +27,6 @@ class Incident(Resource, ApiResponse):
 
         return incident, 200
 
-    @jwt_required
     def patch(self, incident_id):
         """update resource with the given id."""
 
@@ -40,7 +39,6 @@ class Incident(Resource, ApiResponse):
 
         return incident, 200
 
-    @jwt_required
     def delete(self, incident_id):
         """remove resource with the given id from the model."""
 
@@ -67,7 +65,6 @@ class IncidentList(Resource):
 
         self.db = IncidentModel()
 
-    @jwt_required
     def get(self):
         """Fetch a list of all records from the model."""
 
@@ -76,7 +73,6 @@ class IncidentList(Resource):
             'data': self.db.all()
         }, 200
 
-    @jwt_required
     def post(self):
         """Create new incident records. The method also performs validation 
         to ensure all fields required are present.
@@ -116,7 +112,6 @@ class IncidenceQuery(Resource):
 
         self.db = IncidentModel()
 
-    @jwt_required
     def get(self, incident_type):
         red_flags = self.db.where('incident_type', incident_type).get()
 

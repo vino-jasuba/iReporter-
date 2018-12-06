@@ -3,8 +3,8 @@ from datetime import datetime
 from flask import request
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.api.v1.common.api_response import ApiResponse
-from app.api.v1.common.validator import email, required
+from app.api.utils.api_response import ApiResponse
+from app.api.utils.validator import email, required
 from .models import UserModel
 from .schema import UserSchema
 
@@ -20,18 +20,19 @@ class User(Resource, ApiResponse):
 
         self.db = UserModel()
 
-    @jwt_required
     def get(self, user_id):
         """get a user resource by id from the model."""
 
         user = self.db.find(user_id)
 
+        schema = UserSchema(exclude=['password'])
+        schema.context['users'] = [user]
+        
         if not user:
             return self.respondNotFound()
 
-        return user, 200
+        return schema.dump(user)[0], 200
 
-    @jwt_required
     def patch(self, user_id):
         """update user resource with the given id."""
 
@@ -44,7 +45,6 @@ class User(Resource, ApiResponse):
 
         return user, 200
 
-    @jwt_required
     def delete(self, user_id):
         """remove resource with given id from the data store."""
 
@@ -72,13 +72,18 @@ class UserList(Resource, ApiResponse):
 
         self.db = UserModel()
 
-    @jwt_required
     def get(self):
         """fetch all users from the data store."""
 
+        schema = UserSchema(exclude=['password'], many=True)
+        
+        users = self.db.all()
+
+        schema.context['users'] = users
+
         return {
             'status': 200,
-            'data': self.db.all()
+            'data': schema.dump(users)
         }, 200
 
 
