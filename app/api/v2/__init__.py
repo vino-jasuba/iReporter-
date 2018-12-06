@@ -2,10 +2,10 @@ from flask_restful import Api, Resource
 from flask import Blueprint
 from .incidents.views import Incident, IncidentList, IncidenceQuery
 from .users.views import User, UserList, Register, Login
- 
-version_one = Blueprint('api_v1', __name__, url_prefix='/api/v1')
 
-api = Api(version_one)
+version_two = Blueprint('api_v2', __name__, url_prefix='/api/v2')
+
+api = Api(version_two)
 
 api.add_resource(Incident, '/incidents/<int:incident_id>')
 api.add_resource(IncidentList, '/incidents')

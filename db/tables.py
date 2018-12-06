@@ -1,4 +1,4 @@
-from db_config import connect_db
+from .db_config import connect_db
 import psycopg2
 import datetime
 
@@ -24,7 +24,7 @@ create_table_queries = [
     """,
     """CREATE TABLE IF NOT EXISTS incidents (
         id SERIAL PRIMARY KEY,
-        type VARCHAR(48) NOT NULL,
+        incident_type VARCHAR(48) NOT NULL,
         title VARCHAR(191) NOT NULL,
         description TEXT NOT NULL,
         latitude float NOT NULL,
@@ -49,7 +49,7 @@ def drop_tables(connection):
 
     for table in tables:
         cur.execute("DROP TABLE IF EXISTS {} CASCADE".format(table))
-
+        print(table)
     connection.commit()
 
 
@@ -66,11 +66,3 @@ def create_tables(connection):
     VALUES ('Vincent', 'Odhiambo', 'vino', 'admin@app.com', 'password', '{}', 1)".format(datetime.datetime.now().strftime('%c')))
 
     connection.commit()
-
-
-if __name__ == "__main__":
-    conn = connect_db()
-    drop_tables(conn)
-    create_tables(conn)
-    conn.close()
-    

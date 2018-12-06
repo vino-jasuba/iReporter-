@@ -1,7 +1,7 @@
 import random
 import unittest
 from app import create_app
-from app.api.v1.users.models import user_list, Model
+from app.api.v1.users.models import user_list, ListModel    
 
 
 class UserTest(unittest.TestCase):
@@ -123,8 +123,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('anotheremail@gmail.com',
                          response.get_json()['email'])
-        self.assertIsNotNone(Model(user_list).find(target_id))
-        self.assertEqual(Model(user_list).find(target_id), response.get_json())
+        self.assertIsNotNone(ListModel(user_list).find(target_id))
+        self.assertEqual(ListModel(user_list).find(target_id), response.get_json())
 
     def test_it_validates_email_format(self):
 

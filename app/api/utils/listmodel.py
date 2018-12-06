@@ -1,8 +1,8 @@
-
+from .model import AbstractModel
 from werkzeug.exceptions import BadRequest
 
 
-class Model():
+class ListModel(AbstractModel):
     """Represents the base model that defines connection with data store
     classes that communicate with the data store should extend this class
     to get access to methods for doing common data operations.
@@ -61,10 +61,6 @@ class Model():
             self.collection.remove(item)
             return item
 
-    def clear(self):
-        """Delete all records from data store."""
-        self.collection.clear()
-
     def where(self, key, value):
         """
         :param key: key to check 
@@ -72,7 +68,7 @@ class Model():
 
         Returns a new list containing the subset of the data found.
         """
-        
+
         self.query = []
 
         for item in self.collection:
@@ -88,7 +84,7 @@ class Model():
 
         Returns boolean, True if it finds at least one record. False otherwise.
         """
-        
+
         return len(self.where(key, value).get()) > 0
 
     def get(self):
@@ -97,7 +93,7 @@ class Model():
         return self.query
 
     def __generate_user_id(self):
-        # generates a user id by incrementing the latest id 
+        # generates a user id by incrementing the latest id
         # on the data store. If no records, returns 1
 
         if len(self.collection):
