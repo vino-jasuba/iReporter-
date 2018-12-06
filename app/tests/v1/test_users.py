@@ -58,6 +58,7 @@ class UserTest(unittest.TestCase):
         # assert
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, len(response.get_json()['data']))
+        self.assertNotIn('password', random.choice(response.get_json()['data']))
 
     def test_it_fetches_users_by_id(self):
         # setup
@@ -88,6 +89,7 @@ class UserTest(unittest.TestCase):
         # assert
         self.assertEqual(200, response.status_code)
         self.assertEqual(target_id, response.get_json()['id'])
+        self.assertNotIn('password', response.get_json())
 
     def test_it_updates_user_record(self):
 

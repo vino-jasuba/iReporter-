@@ -1,4 +1,4 @@
-from app.api.v1.common.base_model import Model
+from app.api.utils.base_model import Model
 
 user_list = []
 

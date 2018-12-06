@@ -31,9 +31,9 @@ To install and run the project locally:
 - `cd` into iReporter/
 - `pip install -r requirements.txt`
 - `source env/bin/activate`
+- `mv .env.example .env`
 - `python run.py`
 
 ## Tests
 
 - `pytest app/tests`
-

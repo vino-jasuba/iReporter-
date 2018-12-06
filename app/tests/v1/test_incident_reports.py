@@ -38,12 +38,76 @@ class TestIncidentReports(unittest.TestCase):
 
         response = self.client.post('api/v1/incidents', json=self.red_flag)
 
-        second_response = self.client.post('api/v1/incidents', json=self.intervention_record)
+        second_response = self.client.post(
+            'api/v1/incidents', json=self.intervention_record)
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(201, second_response.status_code)
         self.assertEqual(response.get_json(), {
             'message': 'Successfully created incident report'})
+
+    def test_it_validates_location_data_for_incident_records(self):
+
+        response = self.client.post('api/v1/incidents', json={
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "location": {
+                "lat": -1.23121,
+            },
+            "incident_type": "intervention record"
+        })
+
+        response2 = self.client.post('api/v1/incidents', json={
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "location": {
+                "lat": -1.23121,
+                "lng": "not float value"
+            },
+            "incident_type": "intervention record"
+        })
+
+        response3 = self.client.post('api/v1/incidents', json={
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "location": {
+                "lat": -1.23121,
+                "lng": -181.0001
+            },
+            "incident_type": "intervention record"
+        })
+
+        response4 = self.client.post('api/v1/incidents', json={
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "location": {
+                "lat": 93.23121,
+                "lng": -131.1212
+            },
+            "incident_type": "intervention record"
+        })
+
+        response5 = self.client.post('api/v1/incidents', json={
+            "title": "Damaged roads in Matuu",
+            "description": "lorem ipsum dolor sit amet",
+            "incident_type": "intervention record"
+        })
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual('Location not properly formatted. Expecting lat and lng',
+                         response.get_json()['errors']['location'][0])
+        self.assertEqual(422, response2.status_code)
+        self.assertEqual('Expecting float value', response2.get_json()[
+                         'errors']['location'][0])
+        self.assertEqual(422, response3.status_code)
+        self.assertEqual('Value range exceeded for field lng',
+                         response3.get_json()['errors']['location'][0])
+        self.assertEqual(422, response4.status_code)
+        self.assertEqual('Value range exceeded for field lat',
+                         response4.get_json()['errors']['location'][0])
+        self.assertEqual(422, response5.status_code)
+        self.assertEqual('Missing data for required field.',
+                         response5.get_json()['errors']['location'][0])
 
     def test_it_fetches_incident_record_list(self):
 
@@ -151,7 +215,8 @@ class TestIncidentReports(unittest.TestCase):
             'api/v1/incidents/{}'.format(self.intervention_record['id']))
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(self.intervention_record['id'], response.get_json()['data'][0]['id'])
+        self.assertEqual(self.intervention_record['id'], response.get_json()[
+                         'data'][0]['id'])
 
 
 if __name__ == "__main__":

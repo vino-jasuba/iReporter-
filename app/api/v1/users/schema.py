@@ -1,5 +1,5 @@
-from marshmallow import Schema, fields
-from app.api.v1.common.validator import required, email
+from marshmallow import Schema, fields, post_dump
+from app.api.utils.validator import required, email, strong_password
 
 
 class UserSchema(Schema):
@@ -11,3 +11,16 @@ class UserSchema(Schema):
     email = fields.Email(required=True, validate=(email))
     password = fields.Str(required=True, validate=(required))
     password_confirm = fields.Str(required=True, validate=(required))
+
+    @post_dump
+    def add_id(self, data):
+
+        users = self.context.get('users', None)
+
+        if users:
+            for user in users:
+                data['id'] = user['id']
+
+            return data
+
+        return data
