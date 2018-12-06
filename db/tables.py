@@ -73,3 +73,4 @@ if __name__ == "__main__":
     drop_tables(conn)
     create_tables(conn)
     conn.close()
+    

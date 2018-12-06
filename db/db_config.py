@@ -1,19 +1,27 @@
 import psycopg2
+import os
+import sys
+import logging
 
-# TODO: export application configs to .env files
-dsn = "dbname=ireporter user=vino password=password host=localhost"
+database = os.getenv('DB_DATABASE')
+user = os.getenv('DB_USER')
+password = os.getenv('DB_PASSWORD')
+host = os.getenv('DB_HOST')
+
+DSN = "dbname='{}' user='{}' password='{}' host='{}'".format(
+    database, user, password, host)
 
 
 def connect_db():
 
-    try:
-        conn = psycopg2.connect(
-            "dbname='ireporter' user='vino' host='localhost' password='password'")
-    except:
-        print("something went wrong")
+    logger = logging.getLogger('database')
 
+    try:
+        conn = psycopg2.connect(DSN)
+    except Exception as e:
+        logger.error(str(e))
+        sys.exit(1)
+        
+         
     return conn
 
-
-if __name__ == "__main__":
-    connect_db()
