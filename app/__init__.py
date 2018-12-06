@@ -1,4 +1,5 @@
 import os
+
 from flask_jwt_extended import JWTManager
 from flask import Flask, Blueprint
 from .api.v1 import version_one as v1
