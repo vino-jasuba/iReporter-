@@ -13,6 +13,7 @@ Project API demo is hosted at [Heroku](https://vino-ireporter.herokuapp.com)
 ### API endpoints
 
 Prefix `api/v1/` to all api endpoints below
+
 | **HTTP METHOD**   | **URI**  | **ACTION** |
 |---|---|---|
 |  **GET** |  `incidents/<string:incident_type>` | fetch incident records by `incident_type` field |
@@ -30,6 +31,7 @@ To install and run the project locally:
 - `cd` into iReporter/
 - `pip install -r requirements.txt`
 - `source env/bin/activate`
+- `mv .env.example .env`
 - `python run.py`
 
 ## Tests
