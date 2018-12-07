@@ -5,9 +5,6 @@ class IncidentModel(DatabaseModel):
 
     table = 'incidents'
 
-    columns = ['incident_type', 'title', 'description',
-               'latitude', 'longitude', 'created_by']
-
     def __init__(self):
         super().__init__()
 
@@ -16,9 +13,7 @@ class IncidentModel(DatabaseModel):
         self.curr.execute(query)
         results = self.curr.fetchall()
 
-        self.collection = results
-
-        return self.__pretifycollection()
+        return results
 
     def save(self, data):
         query = "INSERT INTO {} (incident_type, title, description, latitude, longitude, created_by) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(
@@ -37,8 +32,9 @@ class IncidentModel(DatabaseModel):
         self.curr.execute(query)
 
         results = self.curr.fetchone()
+
         if results:
-            return self.__pretify(results)
+            return results
 
         return None
 
@@ -51,11 +47,12 @@ class IncidentModel(DatabaseModel):
                 string += "longitude = '{}'".format(value['lng']) + ","
             else:
                 string += "{}".format(key) + " = " + "'{}'".format(value) + ","
-        
+
         return string[:-1]
 
     def update(self, id, data):
-        query = "UPDATE {} SET {} WHERE id = '{}'".format(self.table, self.__update_string(data) , id)
+        query = "UPDATE {} SET {} WHERE id = '{}'".format(
+            self.table, self.__update_string(data), id)
 
         self.curr.execute(query)
         self.conn.commit()
@@ -69,12 +66,13 @@ class IncidentModel(DatabaseModel):
         return True
 
     def where(self, key, value):
-        query = "SELECT * FROM {} WHERE {} = '{}'".format(self.table, key, value)
+        query = "SELECT * FROM {} WHERE {} = '{}'".format(
+            self.table, key, value)
         self.curr.execute(query)
         self.collection = self.curr.fetchall()
 
-        return self.__pretifycollection()
-    
+        return self.collection
+
     def exists(self, key, value):
         query = "SELECT COUNT (*) FROM {} WHERE {} = {}".format(self.table, key, value)
         self.curr.execute(query)
@@ -82,21 +80,8 @@ class IncidentModel(DatabaseModel):
 
         return result[0]
 
-    def __pretifycollection(self):
+    def clear(self):
+        query = "DELETE FROM {}".format(self.table)
+        self.curr.execute(query)
+        self.conn.commit()
 
-        return [self.__pretify(data) for data in self.collection]
-
-    def __pretify(self, data):
-
-        return {
-            'id': data[0],
-            'incident_type': data[1],
-            'title': data[2],
-            'description': data[3],
-            'location': {
-                'lat': data[4],
-                'lng': data[5]
-            },
-            'created_at': data[6].strftime('%c'),
-            'created_by': data[7]
-        }

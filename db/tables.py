@@ -1,6 +1,7 @@
-from .db_config import connect_db
 import psycopg2
 import datetime
+import os
+from werkzeug.security import generate_password_hash
 
 create_table_queries = [
     """CREATE TABLE IF NOT EXISTS roles (
@@ -18,7 +19,7 @@ create_table_queries = [
         email VARCHAR(191) NOT NULL UNIQUE,
         password VARCHAR(191) NOT NULL,
         registered TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'),
-        role INTEGER NOT NULL,
+        role INTEGER NOT NULL DEFAULT 1,
         FOREIGN KEY (role) REFERENCES roles(id)
         )
     """,
@@ -62,7 +63,10 @@ def create_tables(connection):
 
     cur.execute("INSERT INTO roles (role_name, role_slug) VALUES ('{}', '{}')".format(
         'User', 'user'))
-    cur.execute("INSERT INTO users (firstname, lastname, username, email, password, registered, role)\
-    VALUES ('Vincent', 'Odhiambo', 'vino', 'admin@app.com', 'password', '{}', 1)".format(datetime.datetime.now().strftime('%c')))
+    cur.execute("INSERT INTO roles (role_name, role_slug) VALUES ('{}', '{}')".format(
+        'Admin', 'admin'))
+    cur.execute("INSERT INTO users (firstname, lastname, username, email, password, role)\
+    VALUES ('Vincent', 'Odhiambo', 'vino', 'admin@app.com', '{}', 2)".format(
+        generate_password_hash(os.getenv('PASSWORD', 'PaSsw0rd'))))
 
     connection.commit()

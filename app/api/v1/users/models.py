@@ -9,3 +9,5 @@ class UserModel(ListModel):
         """Initialize base model with data store reference."""
 
         super().__init__(user_list)
+
+    

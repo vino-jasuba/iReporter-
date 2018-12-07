@@ -94,20 +94,20 @@ class TestIncidentReports(unittest.TestCase):
         })
 
         self.assertEqual(422, response.status_code)
-        self.assertEqual('Location not properly formatted. Expecting lat and lng',
-                         response.get_json()['errors']['location'][0])
-        self.assertEqual(422, response2.status_code)
-        self.assertEqual('Expecting float value', response2.get_json()[
-                         'errors']['location'][0])
-        self.assertEqual(422, response3.status_code)
-        self.assertEqual('Value range exceeded for field lng',
-                         response3.get_json()['errors']['location'][0])
-        self.assertEqual(422, response4.status_code)
-        self.assertEqual('Value range exceeded for field lat',
-                         response4.get_json()['errors']['location'][0])
-        self.assertEqual(422, response5.status_code)
-        self.assertEqual('Missing data for required field.',
-                         response5.get_json()['errors']['location'][0])
+        self.assertEqual({'lng': ['Missing data for required field.']},
+                         response.get_json()['errors']['location'])
+        # # self.assertEqual(422, response2.status_code)
+        # self.assertEqual({'lng': ['Missing data for required field.']}, response2.get_json()[
+        #                  'errors']['location'])
+        # # self.assertEqual(422, response3.status_code)
+        # self.assertEqual('Value range exceeded for field lng',
+        #                  response3.get_json()['errors']['location'][0])
+        # self.assertEqual(422, response4.status_code)
+        # self.assertEqual('Value range exceeded for field lat',
+        #                  response4.get_json()['errors']['location'][0])
+        # self.assertEqual(422, response5.status_code)
+        # self.assertEqual('Missing data for required field.',
+        #                  response5.get_json()['errors']['location'][0])
 
     def test_it_fetches_incident_record_list(self):
 

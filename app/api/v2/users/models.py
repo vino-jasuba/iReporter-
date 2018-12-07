@@ -10,9 +10,7 @@ class UserModel(DatabaseModel):
         self.curr.execute(query)
         results = self.curr.fetchall()
 
-        self.collection = results
-
-        return self.__pretifycollection()
+        return results
 
     def save(self, data):
         query = "INSERT INTO {} (firstname, lastname, username, email, password) VALUES ('{}', '{}', '{}', '{}', '{}')".format(
@@ -30,9 +28,9 @@ class UserModel(DatabaseModel):
         query = "SELECT * FROM {} WHERE id = {}".format(self.table, id)
         self.curr.execute(query)
 
-        results = self.curr.fetchone()
-        if results:
-            return self.__pretify(results)
+        result = self.curr.fetchone()
+        if result:
+            return result
 
         return None
 
@@ -65,32 +63,20 @@ class UserModel(DatabaseModel):
         self.curr.execute(query)
         self.collection = self.curr.fetchall()
 
-        return self.__pretifycollection()
+        return self.collection
 
     def exists(self, key, value):
-        query = "SELECT COUNT (*) FROM {} WHERE {} = {}".format(self.table, key, value)
+        query = "SELECT COUNT (*) FROM {} WHERE {} = '{}'".format(
+            self.table, key, value)
         self.curr.execute(query)
         result = self.curr.fetchone()
 
-        return result[0]
+        return result['count']
 
-    def __pretifycollection(self):
-
-        return [self.__pretify(data) for data in self.collection]
-
-    def __pretify(self, data):
-
-        print(data)
-        return {
-            'id': data[0],
-            'firstname': data[1],
-            'lastname': data[2],
-            'username': data[3],
-            'othernames': data[4],
-            'email': data[5],
-            'registered': data[7].strftime('%c'),
-            'role': data[8]
-        }
+    def clear(self):
+        query = "DELETE FROM {}".format(self.table)
+        self.curr.execute(query)
+        self.conn.commit()
 
 
 if __name__ == "__main__":

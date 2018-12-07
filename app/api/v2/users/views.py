@@ -10,6 +10,7 @@ from .schema import UserSchema
 
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 
+
 class User(Resource, ApiResponse):
     """Represents a resource class used to interact with user resource
     through HTTP methods. It exposes methods for fetching, updating and deleting items
@@ -29,7 +30,7 @@ class User(Resource, ApiResponse):
         if not user:
             return self.respondNotFound()
 
-        return user, 200
+        return UserSchema(exclude=['password']).dump(user)[0], 200
 
     # @jwt_required
     def patch(self, user_id):
@@ -40,9 +41,9 @@ class User(Resource, ApiResponse):
         if not user:
             return self.respondNotFound()
 
-        self.db.update(user, request.get_json())
+        self.db.update(user_id, request.get_json())
 
-        return user, 200
+        return UserSchema(exclude=['password']).dump(self.db.find(user_id))[0], 200
 
     # @jwt_required
     def delete(self, user_id):
@@ -78,7 +79,7 @@ class UserList(Resource, ApiResponse):
 
         return {
             'status': 200,
-            'data': self.db.all()
+            'data': UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
         }, 200
 
 
@@ -118,7 +119,6 @@ class Register(Resource, ApiResponse):
             'phoneNumber': None,
             'username': data['username'] if data['username'] else data['email'],
             'password': generate_password_hash(data['password']),
-            'registered': datetime.now().strftime('%c'),
             'isAdmin': False
         }
 
@@ -142,12 +142,13 @@ class Login(Resource, ApiResponse):
         data = request.get_json()
         schema = UserSchema()
 
-        data, errors = schema.load(data, partial=('email', 'firstname', 'lastname', 'password_confirm'))
-
+        data, errors = schema.load(data, partial=(
+            'email', 'firstname', 'lastname', 'password_confirm'))
+        
         if errors:
-            return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
+            return {'message': 'Weak password', 'errors': errors}, 422
 
-        users = self.db.where('username', data['username']).get()
+        users = self.db.where('username', data['username'])
 
         if not users:
             return self.respondNotFound()
@@ -160,4 +161,4 @@ class Login(Resource, ApiResponse):
                 'refresh_token': create_refresh_token(UserSchema(exclude=['password']).dump(user)[0])
             }
 
-        return {'message': 'Invalid credentials provided', 'status': '401'}, 401
+        return self.respondUnauthorized('We do not have a user with the provided credentials')

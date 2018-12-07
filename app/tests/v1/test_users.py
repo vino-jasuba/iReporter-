@@ -16,7 +16,7 @@ class UserTest(unittest.TestCase):
 
     def test_it_registers_user(self):
 
-        response = self.client.post('api/v1/auth/register', json={
+        response = self.client.post('api/v1/auth/signup', json={
             'username': 'jasuba',
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
@@ -130,7 +130,7 @@ class UserTest(unittest.TestCase):
 
         # act
         # make request without lastname
-        response = self.client.post('api/v1/auth/register', json={
+        response = self.client.post('api/v1/auth/signup', json={
             'username': 'jasuba',
             'firstname': 'Vincent',
             'lastname': 'Kapipi',
@@ -157,7 +157,7 @@ class UserTest(unittest.TestCase):
         })
 
         # act
-        response = self.client.post('api/v1/auth/register', json={
+        response = self.client.post('api/v1/auth/signup', json={
             'username': 'another_user_name',
             'firstname': 'James',
             'lastname': 'Karuga',
@@ -184,7 +184,7 @@ class UserTest(unittest.TestCase):
         })
 
         # act
-        response = self.client.post('api/v1/auth/register', json={
+        response = self.client.post('api/v1/auth/signup', json={
             'username': 'jasuba',
             'firstname': 'James',
             'lastname': 'Karuga',
@@ -199,7 +199,7 @@ class UserTest(unittest.TestCase):
                          response.get_json()['message'])
 
     def test_it_validates_required_fields(self):
-        response = self.client.post('api/v1/auth/register', json={})
+        response = self.client.post('api/v1/auth/signup', json={})
 
         self.assertEqual(422, response.status_code)
         self.assertEqual('Invalid data received',
