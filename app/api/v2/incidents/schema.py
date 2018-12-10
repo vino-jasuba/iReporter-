@@ -15,6 +15,7 @@ class IncidentSchema(Schema):
     title = fields.Str(required=True, validate=(required))
     description = fields.Str(required=True, validate=(required))
     location = fields.Nested(LocationSchema, required=True)
+    status = fields.Str(required=True, validate=(required))
     created_at = fields.DateTime(required=False,  format='%b, %d, %Y')
 
     @pre_dump

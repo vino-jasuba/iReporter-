@@ -2,6 +2,7 @@ import psycopg2
 import datetime
 import os
 from werkzeug.security import generate_password_hash
+from termcolor import colored
 
 create_table_queries = [
     """CREATE TABLE IF NOT EXISTS roles (
@@ -28,6 +29,7 @@ create_table_queries = [
         incident_type VARCHAR(48) NOT NULL,
         title VARCHAR(191) NOT NULL,
         description TEXT NOT NULL,
+        status VARCHAR(64) NOT NULL DEFAULT ('draft'),
         latitude float NOT NULL,
         longitude float NOT NULL, 
         created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'),
@@ -37,7 +39,6 @@ create_table_queries = [
     """
 ]
 
-
 tables = [
     "roles",
     "users",
@@ -45,28 +46,39 @@ tables = [
 ]
 
 
+def truncate(connection):
+    cur = connection.cursor()
+    cur.execute('TRUNCATE TABLE ' + ','.join(tables) + ' RESTART IDENTITY CASCADE')
+    connection.commit()
+
+
 def drop_tables(connection):
     cur = connection.cursor()
 
     for table in tables:
+        # print(colored('Preparing to drop {} table'.format(table), 'yellow'))
         cur.execute("DROP TABLE IF EXISTS {} CASCADE".format(table))
-        print(table)
+        # print(colored('Successfully dropped {} table'.format(table), 'green'))
     connection.commit()
 
 
 def create_tables(connection):
-
     cur = connection.cursor()
 
     for query in create_table_queries:
+        # print(colored('Migrating {} table'.format(query.split(' ')[5]), 'yellow'))
         cur.execute(query)
+        # print(colored('Successfully created {} table'.format(query.split(' ')[5]), 'green'))
+    connection.commit()
 
+
+def seed(connection):
+    cur = connection.cursor()
     cur.execute("INSERT INTO roles (role_name, role_slug) VALUES ('{}', '{}')".format(
         'User', 'user'))
     cur.execute("INSERT INTO roles (role_name, role_slug) VALUES ('{}', '{}')".format(
         'Admin', 'admin'))
     cur.execute("INSERT INTO users (firstname, lastname, username, email, password, role)\
-    VALUES ('Vincent', 'Odhiambo', 'vino', 'admin@app.com', '{}', 2)".format(
+        VALUES ('Vincent', 'Odhiambo', 'vino', 'admin@app.com', '{}', 2)".format(
         generate_password_hash(os.getenv('PASSWORD', 'PaSsw0rd'))))
-
     connection.commit()

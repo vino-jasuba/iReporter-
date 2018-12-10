@@ -2,8 +2,8 @@ from app.api.utils.databasemodel import DatabaseModel
 
 
 class IncidentModel(DatabaseModel):
-
     table = 'incidents'
+    statuses = ['under investigation', 'rejected', 'resolved', 'draft', 'pending']
 
     def __init__(self):
         super().__init__()
@@ -16,10 +16,11 @@ class IncidentModel(DatabaseModel):
         return results
 
     def save(self, data):
-        query = "INSERT INTO {} (incident_type, title, description, latitude, longitude, created_by) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(
-            self.table, data['incident_type'],
-            data['title'], data['description'], data['location']['lat'],
-            data['location']['lng'], 1)
+        query = "INSERT INTO {} (incident_type, title, description, latitude, longitude, created_by) VALUES" \
+                " ('{}', '{}', '{}', '{}', '{}', '{}')".format(self.table, data['incident_type'],
+                                                               data['title'], data['description'],
+                                                               data['location']['lat'],
+                                                               data['location']['lng'], data['created_by'])
 
         cur = self.conn.cursor()
 
@@ -51,13 +52,12 @@ class IncidentModel(DatabaseModel):
         return string[:-1]
 
     def update(self, id, data):
-        query = "UPDATE {} SET {} WHERE id = '{}'".format(
-            self.table, self.__update_string(data), id)
+        query = "UPDATE {} SET {} WHERE id = '{}' RETURNING id, incident_type, latitude, status, " \
+                "longitude, description, title".format(self.table, self.__update_string(data), id)
 
         self.curr.execute(query)
-        self.conn.commit()
 
-        return {}
+        return self.curr.fetchone()
 
     def delete(self, id):
         query = "DELETE FROM {} WHERE id = {}".format(self.table, id)
@@ -68,10 +68,9 @@ class IncidentModel(DatabaseModel):
     def where(self, key, value):
         query = "SELECT * FROM {} WHERE {} = '{}'".format(
             self.table, key, value)
-        self.curr.execute(query)
-        self.collection = self.curr.fetchall()
 
-        return self.collection
+        self.curr.execute(query)
+        return self.curr.fetchall()
 
     def exists(self, key, value):
         query = "SELECT COUNT (*) FROM {} WHERE {} = {}".format(self.table, key, value)
@@ -84,4 +83,3 @@ class IncidentModel(DatabaseModel):
         query = "DELETE FROM {}".format(self.table)
         self.curr.execute(query)
         self.conn.commit()
-

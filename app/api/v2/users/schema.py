@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields, post_dump
+from marshmallow import Schema, fields
+
 from app.api.utils.validator import required, email, strong_password
 
 
@@ -12,5 +13,4 @@ class UserSchema(Schema):
     othernames = fields.Str(required=False)
     email = fields.Email(required=True, validate=(email))
     password = fields.Str(required=True, validate=(required, strong_password))
-    password_confirm = fields.Str(required=True, validate=(required))
     registered = fields.DateTime(required=False, format='%b, %d, %Y')

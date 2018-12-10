@@ -1,14 +1,11 @@
-import re
-from datetime import datetime
 from flask import request
-from flask_restful import Api, Resource, reqparse
+from flask_jwt_extended import create_access_token, create_refresh_token, get_current_user
+from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from app.api.utils.api_response import ApiResponse
-from app.api.utils.validator import email, required
 from .models import UserModel
 from .schema import UserSchema
-
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 
 
 class User(Resource, ApiResponse):
@@ -53,12 +50,12 @@ class User(Resource, ApiResponse):
 
         if deleted_record:
             return {
-                'data': [{
-                    'id': user_id,
-                    'message': 'user with id {}'.format(user_id) + ' has been deleted'
-                }],
-                'status': 200
-            }, 200
+                       'data': [{
+                           'id': user_id,
+                           'message': 'user with id {}'.format(user_id) + ' has been deleted'
+                       }],
+                       'status': 200
+                   }, 200
         else:
             return self.respondNotFound()
 
@@ -78,9 +75,9 @@ class UserList(Resource, ApiResponse):
         """fetch all users from the data store."""
 
         return {
-            'status': 200,
-            'data': UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
-        }, 200
+                   'status': 200,
+                   'data': UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
+               }, 200
 
 
 class Register(Resource, ApiResponse):
@@ -144,7 +141,7 @@ class Login(Resource, ApiResponse):
 
         data, errors = schema.load(data, partial=(
             'email', 'firstname', 'lastname', 'password_confirm'))
-        
+
         if errors:
             return {'message': 'Weak password', 'errors': errors}, 422
 
