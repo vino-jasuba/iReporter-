@@ -12,7 +12,7 @@ Project API demo is hosted at [Heroku](https://vino-ireporter.herokuapp.com)
 
 ### API endpoints
 
-Prefix `api/v1/` to all api endpoints below
+Prefix `api/v1/` | `api/v2` to all api endpoints below to access either version 1 or 2 of the app respectively
 
 | **HTTP METHOD**   | **URI**  | **ACTION** |
 |---|---|---|
@@ -32,6 +32,7 @@ To install and run the project locally:
 - `pip install -r requirements.txt`
 - `source env/bin/activate`
 - `mv .env.example .env`
+- `python manage.py -a` (run database creation scripts. You can customize the environment by editing the `.env file`)
 - `python run.py`
 
 ## Tests

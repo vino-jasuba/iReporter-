@@ -1,5 +1,5 @@
 from flask import request
-from flask_jwt_extended import create_access_token, create_refresh_token, get_current_user
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,7 +18,7 @@ class User(Resource, ApiResponse):
 
         self.db = UserModel()
 
-    # @jwt_required
+    @jwt_required
     def get(self, user_id):
         """get a user resource by id from the model."""
 
@@ -29,7 +29,7 @@ class User(Resource, ApiResponse):
 
         return UserSchema(exclude=['password']).dump(user)[0], 200
 
-    # @jwt_required
+    @jwt_required
     def patch(self, user_id):
         """update user resource with the given id."""
 
@@ -42,7 +42,7 @@ class User(Resource, ApiResponse):
 
         return UserSchema(exclude=['password']).dump(self.db.find(user_id))[0], 200
 
-    # @jwt_required
+    @jwt_required
     def delete(self, user_id):
         """remove resource with given id from the data store."""
 
@@ -70,7 +70,7 @@ class UserList(Resource, ApiResponse):
 
         self.db = UserModel()
 
-    # @jwt_required
+    @jwt_required
     def get(self):
         """fetch all users from the data store."""
 
