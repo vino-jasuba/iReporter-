@@ -4,7 +4,7 @@
 citizens to report corruption cases to relevant authorities. Users can also report
 on things that need government intervention.
 
-[![Build Status](https://travis-ci.org/vino-jasuba/iReporter-.svg?branch=ch-travis-ci-integration-162297608)](https://travis-ci.org/vino-jasuba/iReporter-) [![Coverage Status](https://coveralls.io/repos/github/vino-jasuba/iReporter-/badge.svg?branch=ch-travis-ci-integration-162297608)](https://coveralls.io/github/vino-jasuba/iReporter-?branch=ch-travis-ci-integration-162297608) [![Maintainability](https://api.codeclimate.com/v1/badges/9b822c57ae21083b11c5/maintainability)](https://codeclimate.com/github/vino-jasuba/iReporter-/maintainability)
+[![Build Status](https://travis-ci.org/vino-jasuba/iReporter-.svg?branch=develop)](https://travis-ci.org/vino-jasuba/iReporter-) [![Coverage Status](https://coveralls.io/repos/github/vino-jasuba/iReporter-/badge.svg?branch=develop)](https://coveralls.io/github/vino-jasuba/iReporter-?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/9b822c57ae21083b11c5/maintainability)](https://codeclimate.com/github/vino-jasuba/iReporter-/maintainability)
 
 ## Demo
 
