@@ -3,3 +3,5 @@ env/*
 *pyc
 .coverage 
 .env
+.idea/
+.idea/*

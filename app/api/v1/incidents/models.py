@@ -1,8 +1,8 @@
-from app.api.utils.base_model import Model
+from app.api.utils.listmodel import ListModel
 
 incident_list = [] 
 
-class IncidentModel(Model):
+class IncidentModel(ListModel):
     """Represents a model for storing incidents."""
 
     def __init__(self):

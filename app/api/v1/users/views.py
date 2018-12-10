@@ -83,7 +83,7 @@ class UserList(Resource, ApiResponse):
 
         return {
             'status': 200,
-            'data': schema.dump(users)
+            'data': schema.dump(users)[0]
         }, 200
 
 

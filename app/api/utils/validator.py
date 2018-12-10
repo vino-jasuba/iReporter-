@@ -26,12 +26,8 @@ def email(value):
 def geopoint(value):
     """Validate field contains lat and lng coordinates."""
 
-    if list(value) != ['lat', 'lng']:
-        raise ValidationError(
-            'Location not properly formatted. Expecting lat and lng')
-
-    if not isinstance(value['lat'], float) or not isinstance(value['lng'], float):
-        raise ValidationError('Expecting float value')
+    if not isinstance(value, float):
+        raise ValidationError('Expecting float value for coordinate')
 
     if value['lat'] > 90 or value['lat'] < -90:
         raise ValidationError("Value range exceeded for field lat")
@@ -41,6 +37,17 @@ def geopoint(value):
 
     return value
 
+def latitude(value):
+    """Validate field contains proper latitude"""
+
+    if value > 90 or value < -90:
+        raise ValidationError("Value exceeds latitude range")
+
+def longitude(value):
+    """Validate field contains proper longitude"""
+
+    if value > 180 or value < -180: 
+        raise ValidationError("Value exceeds longitude range")
 
 def strong_password(password):
     """Validate field contains strong password"""

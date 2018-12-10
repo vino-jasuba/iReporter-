@@ -1,11 +1,11 @@
 import datetime
 from flask import request
-from flask_restful import Api, Resource
-from app.api.v1.common.api_response import ApiResponse
-from app.api.v1.common.validator import required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_restful import Resource
+from app.api.utils.api_response import ApiResponse
 from .models import IncidentModel
-from .schema import IncidentSchema 
-from flask_jwt_extended import jwt_required
+from .schema import IncidentSchema
+
 
 class Incident(Resource, ApiResponse):
     """Represents a resource class used to interact with incident reports 
@@ -19,13 +19,12 @@ class Incident(Resource, ApiResponse):
     @jwt_required
     def get(self, incident_id):
         """get a resource by id from the model."""
-
         incident = self.db.find(incident_id)
 
         if not incident:
             return self.respondNotFound()
 
-        return incident, 200
+        return IncidentSchema().dump(incident)[0], 200
 
     @jwt_required
     def patch(self, incident_id):
@@ -36,9 +35,9 @@ class Incident(Resource, ApiResponse):
         if not incident:
             return self.respondNotFound()
 
-        self.db.update(incident, request.get_json())
+        incident = self.db.update(incident_id, request.get_json())
 
-        return incident, 200
+        return IncidentSchema().dump(incident)[0], 200
 
     @jwt_required
     def delete(self, incident_id):
@@ -48,12 +47,12 @@ class Incident(Resource, ApiResponse):
 
         if deleted_record:
             return {
-                'data': [{
-                    'id': deleted_record['id'],
-                    'message': deleted_record['incident_type'] + ' ' + ' has been deleted'
-                }],
-                'status': 200
-            }, 200
+                       'data': [{
+                           'id': incident_id,
+                           'message': 'record has been deleted'
+                       }],
+                       'status': 200
+                   }, 200
         else:
             return self.respondNotFound()
 
@@ -72,15 +71,16 @@ class IncidentList(Resource):
         """Fetch a list of all records from the model."""
 
         return {
-            'status': 200,
-            'data': self.db.all()
-        }, 200
+                   'status': 200,
+                   'data': IncidentSchema(many=True).dump(self.db.all())[0]
+               }, 200
 
     @jwt_required
     def post(self):
         """Create new incident records. The method also performs validation 
         to ensure all fields required are present.
         """
+        user = get_jwt_identity()
 
         data, errors = IncidentSchema().load(request.get_json())
 
@@ -98,7 +98,7 @@ class IncidentList(Resource):
                 'lng': data['location']['lng']
             },
             'created_on': datetime.datetime.now().strftime('%c'),
-            'created_by': None  # we'll need an authenticated user for this
+            'created_by': user['id']
         }
 
         self.db.save(incident)
@@ -118,9 +118,37 @@ class IncidenceQuery(Resource):
 
     @jwt_required
     def get(self, incident_type):
-        red_flags = self.db.where('incident_type', incident_type).get()
+        red_flags = self.db.where('incident_type', incident_type)
 
         return {
-            'data': red_flags,
+            'data': IncidentSchema(many=True).dump(red_flags)[0],
             'status': 200
         }
+
+
+class IncidentManager(Resource, ApiResponse):
+    """Represents a resource class used by admin user to manage incident
+        reports through HTTP methods. It exposes a method for updating the status on incident records
+    """
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+
+        self.db = IncidentModel()
+
+    @jwt_required
+    def patch(self, incident_id):
+        """Update the status of an incident record"""
+        data = request.get_json()
+
+        if data['status'] not in self.db.statuses:
+            return self.respondUnprocessibleEntity('Not valid status')
+
+        incident = self.db.find(incident_id)
+
+        if not incident:
+            return self.respondNotFound()
+
+        incident = self.db.update(incident_id, data)
+
+        return IncidentSchema().dump(incident)[0]
