@@ -157,6 +157,15 @@ class UserIncidents(Resource, ApiResponse):
     def __init__(self):
         self.db = IncidentModel()
 
-    def get(self, user_id):
-        pass
+    @jwt_required
+    def get(self):
+
+        user = get_jwt_identity()
+
+        incident_records = self.db.where('created_by', user['id'])
+
+        incident_records = IncidentSchema(many=True).dump(incident_records)[0]
+        
+        return self.respond({'data': incident_records})
+
 
