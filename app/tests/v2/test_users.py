@@ -60,7 +60,7 @@ class UserTest(unittest.TestCase):
         response = self.client.post('api/v2/auth/signup', json=self.sample_user, headers=self.headers)
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual(self.sample_user['username'], response.get_json()['username'])
+        self.assertEqual(self.sample_user['username'], response.get_json()['data']['username'])
         self.assertNotIn('password', response.get_json())
 
     def test_it_fetches_list_of_users(self):
@@ -93,9 +93,12 @@ class UserTest(unittest.TestCase):
 
         # assert
         self.assertEqual(200, response.status_code)
-        self.assertEqual(self.sample_user['username'], response.get_json()['username'])
+        data = response.get_json()
+        print(data)
+        self.assertEqual(self.sample_user['username'], data['data']['username'])
         self.assertEqual(404, failing.status_code)
         self.assertEqual('resource not found', failing.get_json()['message'])
+        self.assertIn('status', data)
 
     def test_it_updates_user_record(self):
         # setup
@@ -110,7 +113,8 @@ class UserTest(unittest.TestCase):
 
         # assert
         self.assertEqual(200, response.status_code)
-        self.assertEqual(username, response.get_json()['username'])
+        data = response.get_json()
+        self.assertEqual(username, data['data']['username'])
 
     def test_it_validates_email_format(self):
         # setup
@@ -122,7 +126,7 @@ class UserTest(unittest.TestCase):
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual(['Not a valid email address.', 'The parameter must be a valid email'],
+        self.assertEqual(['Not a valid email address.'],
                          response.get_json()['errors']['email'])
 
     def test_registration_with_duplicate_email_fails(self):
@@ -140,7 +144,7 @@ class UserTest(unittest.TestCase):
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual('error, email already in use', response.get_json()['message'])
+        self.assertEqual('email already in use', response.get_json()['message'])
 
     def test_registration_with_duplicate_username_fails(self):
         # setup
@@ -157,7 +161,7 @@ class UserTest(unittest.TestCase):
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual('error, username already taken', response.get_json()['message'])
+        self.assertEqual('username already taken', response.get_json()['message'])
 
     def test_it_validates_required_fields(self):
         # setup

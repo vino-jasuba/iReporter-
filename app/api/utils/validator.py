@@ -1,8 +1,10 @@
 import re
 from marshmallow import ValidationError
 
+incident_types = ['red_flag', 'intervention']
 
-def required(value):
+
+def not_empty(value):
     """Validate that field under validation does not contain null value."""
 
     if isinstance(value, str):
@@ -12,15 +14,6 @@ def required(value):
         return value
     elif value:
         return value
-
-
-def email(value):
-    """Validate field matches email format."""
-
-    if not re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", value):
-        raise ValidationError('The parameter must be a valid email')
-
-    return value
 
 
 def geopoint(value):
@@ -37,23 +30,26 @@ def geopoint(value):
 
     return value
 
+
 def latitude(value):
     """Validate field contains proper latitude"""
 
     if value > 90 or value < -90:
         raise ValidationError("Value exceeds latitude range")
 
+
 def longitude(value):
     """Validate field contains proper longitude"""
 
-    if value > 180 or value < -180: 
+    if value > 180 or value < -180:
         raise ValidationError("Value exceeds longitude range")
+
 
 def strong_password(password):
     """Validate field contains strong password"""
 
     message = "Password field should be at least 8 characters long." \
-    " Have at least 1 uppercase, 1 lowercase and 1 digit"
+              " Have at least 1 uppercase, 1 lowercase and 1 digit"
 
     if len(password) < 8:
         raise ValidationError(message)
@@ -72,3 +68,8 @@ def strong_password(password):
 
     if sum(scores.values()) < 3:
         raise ValidationError(message)
+
+
+def valid_type(incident_type):
+    if incident_type not in incident_types:
+        raise ValidationError("Invalid incident type \'{}\'".format(incident_type))

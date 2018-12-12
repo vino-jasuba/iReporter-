@@ -1,14 +1,12 @@
-import re
 from datetime import datetime
 from flask import request
-from flask_restful import Api, Resource, reqparse
+from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.utils.api_response import ApiResponse
-from app.api.utils.validator import email, required
 from .models import UserModel
 from .schema import UserSchema
 
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 
 class User(Resource, ApiResponse):
     """Represents a resource class used to interact with user resource
@@ -27,7 +25,7 @@ class User(Resource, ApiResponse):
 
         schema = UserSchema(exclude=['password'])
         schema.context['users'] = [user]
-        
+
         if not user:
             return self.respondNotFound()
 
@@ -52,12 +50,12 @@ class User(Resource, ApiResponse):
 
         if deleted_record:
             return {
-                'data': [{
-                    'id': deleted_record['id'],
-                    'message': 'user with id {}'.format(deleted_record['id']) + ' has been deleted'
-                }],
-                'status': 200
-            }, 200
+                       'data': [{
+                           'id': deleted_record['id'],
+                           'message': 'user with id {}'.format(deleted_record['id']) + ' has been deleted'
+                       }],
+                       'status': 200
+                   }, 200
         else:
             return self.respondNotFound()
 
@@ -76,15 +74,15 @@ class UserList(Resource, ApiResponse):
         """fetch all users from the data store."""
 
         schema = UserSchema(exclude=['password'], many=True)
-        
+
         users = self.db.all()
 
         schema.context['users'] = users
 
         return {
-            'status': 200,
-            'data': schema.dump(users)[0]
-        }, 200
+                   'status': 200,
+                   'data': schema.dump(users)[0]
+               }, 200
 
 
 class Register(Resource, ApiResponse):
@@ -110,10 +108,10 @@ class Register(Resource, ApiResponse):
             return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
 
         if self.db.exists('username', data['username']):
-            return self.respondUnprocessibleEntity('username already taken')
+            return self.respondUnprocessibleEntity({'message': 'username already taken'})
 
         if self.db.exists('email', data['email']):
-            return self.respondUnprocessibleEntity('email already in use')
+            return self.respondUnprocessibleEntity({'message': 'email already in use'})
 
         user = {
             'firstname': data['firstname'],

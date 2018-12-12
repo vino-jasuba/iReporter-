@@ -27,7 +27,8 @@ class User(Resource, ApiResponse):
         if not user:
             return self.respondNotFound()
 
-        return UserSchema(exclude=['password']).dump(user)[0], 200
+        user = UserSchema(exclude=['password']).dump(user)[0]
+        return self.respond({'data': user})
 
     @jwt_required
     def patch(self, user_id):
@@ -38,9 +39,10 @@ class User(Resource, ApiResponse):
         if not user:
             return self.respondNotFound()
 
-        self.db.update(user_id, request.get_json())
+        user = self.db.update(user_id, request.get_json())
+        user = UserSchema(exclude=['password']).dump(user)[0]
 
-        return UserSchema(exclude=['password']).dump(self.db.find(user_id))[0], 200
+        return self.respond({'data': user, 'message': 'successfully updated user details'})
 
     @jwt_required
     def delete(self, user_id):
@@ -49,13 +51,9 @@ class User(Resource, ApiResponse):
         deleted_record = self.db.delete(user_id)
 
         if deleted_record:
-            return {
-                       'data': [{
-                           'id': user_id,
-                           'message': 'user with id {}'.format(user_id) + ' has been deleted'
-                       }],
-                       'status': 200
-                   }, 200
+            message = 'user with id {}'.format(user_id) + ' has been deleted'
+            data = {'id': user_id, 'message': message}
+            return self.respond(data)
         else:
             return self.respondNotFound()
 
@@ -74,10 +72,8 @@ class UserList(Resource, ApiResponse):
     def get(self):
         """fetch all users from the data store."""
 
-        return {
-                   'status': 200,
-                   'data': UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
-               }, 200
+        data = UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
+        return self.respond({'data': data})
 
 
 class Register(Resource, ApiResponse):
@@ -89,31 +85,32 @@ class Register(Resource, ApiResponse):
         as the schema it should use for validation."""
 
         self.db = UserModel()
-        self.schema = UserSchema()
 
     def post(self):
         """register a new user."""
 
-        data = request.get_json()
-        schema = UserSchema()
-
-        data, errors = schema.load(data)
+        data, errors = UserSchema().load(request.get_json())
 
         if errors:
-            return {'errors': errors, 'message': 'Invalid data received', 'status': 422}, 422
+            return self.respondUnprocessibleEntity({
+                'errors': errors,
+                'message': 'Invalid data received'
+            })
 
         if self.db.exists('username', data['username']):
-            return self.respondUnprocessibleEntity('username already taken')
+            return self.respondUnprocessibleEntity({
+                'message': 'username already taken'
+            })
 
         if self.db.exists('email', data['email']):
-            return self.respondUnprocessibleEntity('email already in use')
+            return self.respondUnprocessibleEntity({'message': 'email already in use'})
 
         user = {
             'firstname': data['firstname'],
             'lastname': data['lastname'],
-            'othernames': None,
+            'othernames': "",
             'email': data['email'],
-            'phoneNumber': None,
+            'phoneNumber': "",
             'username': data['username'] if data['username'] else data['email'],
             'password': generate_password_hash(data['password']),
             'isAdmin': False
@@ -122,7 +119,7 @@ class Register(Resource, ApiResponse):
         self.db.save(user)
 
         response = UserSchema(exclude=['password']).dump(user)[0]
-        return response, 201
+        return self.respondEntityCreated({'data': response, 'message': 'Successfully created user'})
 
 
 class Login(Resource, ApiResponse):
@@ -136,26 +133,30 @@ class Login(Resource, ApiResponse):
     def post(self):
         """login a user with given credentials"""
 
-        data = request.get_json()
-        schema = UserSchema()
+        # take advantage of UserSchema password side effect
+        data, errors = UserSchema(only=('username', 'password')).load(request.get_json())
 
-        data, errors = schema.load(data, partial=(
-            'email', 'firstname', 'lastname', 'password_confirm'))
+        auth_failure_message = 'Username or password not valid'
 
         if errors:
-            return {'message': 'Weak password', 'errors': errors}, 422
+            return self.respondUnprocessibleEntity({
+                'message': auth_failure_message
+            })
 
         users = self.db.where('username', data['username'])
 
+        print(users)
+
         if not users:
-            return self.respondNotFound()
+            return self.respondUnauthorized(auth_failure_message)
 
         user = users[0]
 
         if check_password_hash(user['password'], data['password']):
-            return {
+            return self.respond({
                 'access_token': create_access_token(UserSchema(exclude=['password']).dump(user)[0]),
-                'refresh_token': create_refresh_token(UserSchema(exclude=['password']).dump(user)[0])
-            }
+                'refresh_token': create_refresh_token(UserSchema(exclude=['password']).dump(user)[0]),
+                'message': 'successfully authenticated user'
+            })
 
-        return self.respondUnauthorized('We do not have a user with the provided credentials')
+        return self.respondUnauthorized(auth_failure_message)

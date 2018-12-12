@@ -21,10 +21,9 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
-
+        print(response.get_json())
         self.assertEqual(201, response.status_code)
         self.assertEqual('jasuba', response.get_json()['username'])
         self.assertNotIn('password', response.get_json())
@@ -38,8 +37,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         user_list.append({
@@ -48,8 +46,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Gender',
             'lastname': 'Balance',
             'email': 'gb@user.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # act
@@ -68,8 +65,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         user_list.append({
@@ -78,8 +74,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Gender',
             'lastname': 'Balance',
             'email': 'gb@user.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         target_id = random.choice([1, 2])
@@ -99,8 +94,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         user_list.append({
@@ -109,8 +103,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Gender',
             'lastname': 'Balance',
             'email': 'gb@user.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         target_id = random.choice([1, 2])
@@ -135,8 +128,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Kapipi',
             'email': 'invalid email',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # assert
@@ -152,8 +144,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # act
@@ -162,13 +153,12 @@ class UserTest(unittest.TestCase):
             'firstname': 'James',
             'lastname': 'Karuga',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual('error, email already in use',
+        self.assertEqual('email already in use',
                          response.get_json()['message'])
 
     def test_registration_with_duplicate_username_fails(self):
@@ -179,8 +169,7 @@ class UserTest(unittest.TestCase):
             'firstname': 'Vincent',
             'lastname': 'Odhiambo',
             'email': 'user@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # act
@@ -189,13 +178,12 @@ class UserTest(unittest.TestCase):
             'firstname': 'James',
             'lastname': 'Karuga',
             'email': 'valid@admin.com',
-            'password': 'password',
-            'password_confirm': 'password'
+            'password': 'pAsSw0rd',
         })
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual('error, username already taken',
+        self.assertEqual('username already taken',
                          response.get_json()['message'])
 
     def test_it_validates_required_fields(self):
@@ -209,7 +197,6 @@ class UserTest(unittest.TestCase):
             'firstname': ['Missing data for required field.'],
             'lastname': ['Missing data for required field.'],
             'password': ['Missing data for required field.'],
-            'password_confirm': ['Missing data for required field.'],
             'username': ['Missing data for required field.']
         }, response.get_json()['errors'])
 

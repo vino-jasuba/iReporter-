@@ -2,7 +2,6 @@ from app.api.utils.databasemodel import DatabaseModel
 
 
 class UserModel(DatabaseModel):
-
     table = 'users'
 
     def all(self):
@@ -43,13 +42,13 @@ class UserModel(DatabaseModel):
         return string[:-1]
 
     def update(self, id, data):
-        query = "UPDATE {} SET {} WHERE id = '{}'".format(
-            self.table, self.__update_string(data), id)
+        query = "UPDATE {} SET {} WHERE id = '{}' RETURNING id, firstname, " \
+                "lastname, username, email, othernames, registered, role".format(
+                  self.table, self.__update_string(data), id)
 
         self.curr.execute(query)
         self.conn.commit()
-
-        return {}
+        return self.curr.fetchone()
 
     def delete(self, id):
         query = "DELETE FROM {} WHERE id = {}".format(self.table, id)
@@ -61,9 +60,7 @@ class UserModel(DatabaseModel):
         query = "SELECT * FROM {} WHERE {} = '{}'".format(
             self.table, key, value)
         self.curr.execute(query)
-        self.collection = self.curr.fetchall()
-
-        return self.collection
+        return self.curr.fetchall()
 
     def exists(self, key, value):
         query = "SELECT COUNT (*) FROM {} WHERE {} = '{}'".format(
