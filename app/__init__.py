@@ -1,19 +1,31 @@
-import os
+from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
-from flask import Flask, Blueprint
+from psycopg2 import Error
+
 from app.api.v1 import version_one as v1
 from app.api.v2 import version_two as v2
 from instance.config import app_config
 
 
-def internal_server_error(error):
+@v2.app_errorhandler(Exception)
+def handle_error(error):
+    response = None
+    status_code = 500
 
-    return {'message': 'Internal server error', 'status': 500}, 500
+    if isinstance(error, Error):
+        response = {
+            'message': 'Database error. Could not complete requested database transaction.',
+        }
 
+    if isinstance(error, Exception):
+        response = {
+            'message': 'Could not complete your request'
+        }
+        status_code = 400
 
-def page_not_found(error):
+    response.update({'status': status_code})
 
-    return {"message": "The resource you're looking for could not be found", "status": 404}
+    return jsonify(response), status_code
 
 
 def create_app(config_name):

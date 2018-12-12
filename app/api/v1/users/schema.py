@@ -1,16 +1,15 @@
 from marshmallow import Schema, fields, post_dump
-from app.api.utils.validator import required, email, strong_password
+from app.api.utils.validator import not_empty, strong_password
 
 
 class UserSchema(Schema):
     """Represents the schema for users."""
 
-    firstname = fields.Str(required=True, validate=(required))
-    lastname = fields.Str(required=True, validate=(required))
-    username = fields.Str(required=True, validate=(required))
-    email = fields.Email(required=True, validate=(email))
-    password = fields.Str(required=True, validate=(required))
-    password_confirm = fields.Str(required=True, validate=(required))
+    firstname = fields.Str(required=True, validate=(not_empty))
+    lastname = fields.Str(required=True, validate=(not_empty))
+    username = fields.Str(required=True, validate=(not_empty))
+    email = fields.Email(required=True)
+    password = fields.Str(required=True, validate=(not_empty, strong_password))
 
     @post_dump
     def add_id(self, data):

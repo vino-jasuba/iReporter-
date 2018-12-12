@@ -17,16 +17,15 @@ class IncidentModel(DatabaseModel):
 
     def save(self, data):
         query = "INSERT INTO {} (incident_type, title, description, latitude, longitude, created_by) VALUES" \
-                " ('{}', '{}', '{}', '{}', '{}', '{}')".format(self.table, data['incident_type'],
+                " ('{}', '{}', '{}', '{}', '{}', '{}') RETURNING {}.*".format(self.table, data['incident_type'],
                                                                data['title'], data['description'],
                                                                data['location']['lat'],
-                                                               data['location']['lng'], data['created_by'])
+                                                               data['location']['lng'], data['created_by'],
+                                                               self.table)
 
-        cur = self.conn.cursor()
-
-        cur.execute(query)
-
+        self.curr.execute(query)
         self.conn.commit()
+        return self.curr.fetchone()
 
     def find(self, id):
         query = "SELECT * FROM {} WHERE id = {}".format(self.table, id)
@@ -52,11 +51,12 @@ class IncidentModel(DatabaseModel):
         return string[:-1]
 
     def update(self, id, data):
-        query = "UPDATE {} SET {} WHERE id = '{}' RETURNING id, incident_type, latitude, status, " \
-                "longitude, description, title".format(self.table, self.__update_string(data), id)
+        query = "UPDATE {} SET {} WHERE id = '{}' RETURNING {}.*".format(
+            self.table, self.__update_string(data), id, self.table
+        )
 
         self.curr.execute(query)
-
+        self.conn.commit()
         return self.curr.fetchone()
 
     def delete(self, id):

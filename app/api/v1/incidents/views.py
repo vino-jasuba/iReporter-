@@ -2,7 +2,7 @@ import datetime
 from flask import request
 from flask_restful import Api, Resource
 from app.api.utils.api_response import ApiResponse
-from app.api.utils.validator import required
+from app.api.utils.validator import not_empty
 from .models import IncidentModel
 from .schema import IncidentSchema
 from flask_jwt_extended import jwt_required

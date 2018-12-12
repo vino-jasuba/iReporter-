@@ -16,8 +16,8 @@ if __name__ == "__main__":
         description='Database management tool for iReporter')
 
     parser.add_argument(
-        '-a', '--action', metavar='[migrate|truncate]', help='Database action',
-        choices={'migrate', 'truncate'}, const='migrate', nargs='?')
+        '-a', '--action', metavar='[migrate|truncate|seed]', help='Database action',
+        choices={'migrate', 'truncate', 'seed'}, const='migrate', nargs='?')
 
     args = parser.parse_args()
 
@@ -25,7 +25,11 @@ if __name__ == "__main__":
 
     if args.action == 'migrate':
         migrate(conn)
-    else:
+    elif args.action == 'truncate':
         truncate(conn)
+    elif args.action == 'seed':
+        seed(conn)
+    else:
+        pass
 
     conn.close()

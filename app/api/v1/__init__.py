@@ -5,7 +5,7 @@ from .users.views import User, UserList, Register, Login
  
 version_one = Blueprint('api_v1', __name__, url_prefix='/api/v1')
 
-api = Api(version_one)
+api = Api(version_one, catch_all_404s=True)
 
 api.add_resource(Incident, '/incidents/<int:incident_id>')
 api.add_resource(IncidentList, '/incidents')

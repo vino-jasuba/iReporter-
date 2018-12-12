@@ -26,7 +26,7 @@ class TestIncidentReports(unittest.TestCase):
                 "lat": -1.23121,
                 "lng": 23.45443
             },
-            "incident_type": "red flag",
+            "incident_type": "red_flag",
             "created_by": 1,
             "status": "pending"
         }
@@ -38,7 +38,7 @@ class TestIncidentReports(unittest.TestCase):
                 "lat": -1.23121,
                 "lng": 23.45443
             },
-            "incident_type": "intervention record",
+            "incident_type": "intervention",
             "created_by": 1,
             "status": "pending"
         }
@@ -81,9 +81,11 @@ class TestIncidentReports(unittest.TestCase):
         response = self.client.post('api/v2/incidents', json=self.red_flag, headers=self.headers)
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual(response.get_json(), {
-            'message': 'Successfully created incident report'})
+        self.assertEqual(response.get_json()['data']['description'], self.red_flag['description'])
+        self.assertEqual(response.get_json()['data']['incident_type'], self.red_flag['incident_type'])
+        self.assertEqual(response.get_json()['data']['location'], self.red_flag['location'])
 
+    # todo
     def test_it_validates_location_data_for_incident_records(self):
         pass
 
@@ -109,8 +111,8 @@ class TestIncidentReports(unittest.TestCase):
         failed_response = self.client.get('api/v1/incidents/3434')
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, response.get_json()['id'])
-        self.assertEqual('intervention record', response.get_json()['incident_type'])
+        self.assertEqual(1, response.get_json()['data']['id'])
+        self.assertEqual('intervention', response.get_json()['data']['incident_type'])
         self.assertEqual(404, failed_response.status_code)
         self.assertEqual({'message': 'resource not found', 'status': 404}, failed_response.get_json())
 
@@ -120,7 +122,7 @@ class TestIncidentReports(unittest.TestCase):
         IncidentModel().save(self.red_flag)
 
         # act
-        response = self.client.get('api/v2/incidents/red flag', headers=self.headers)
+        response = self.client.get('api/v2/incidents/red_flag', headers=self.headers)
         wrong_type = self.client.get('api/v2/incidents/nonexistent type', headers=self.headers)
 
         self.assertEqual(200, response.status_code)
@@ -145,7 +147,7 @@ class TestIncidentReports(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(description,
-                         response.get_json()['description'])
+                         response.get_json()['data']['description'])
 
     def test_updating_nonexistent_record_fails(self):
         # setup
@@ -168,10 +170,10 @@ class TestIncidentReports(unittest.TestCase):
         response = self.client.delete('api/v2/incidents/{}'.format(choice), headers=self.headers)
 
         # assert
-        response_data = response.get_json()['data'][0]
+        response_data = response.get_json()
         self.assertEqual(200, response.status_code)
         self.assertEqual(choice, response_data['id'])
-        self.assertEqual('record has been deleted', response_data['message'])
+        self.assertEqual('record with id {} has been deleted'.format(choice), response_data['message'])
 
     def test_admin_updates_incident_status(self):
         # setup
@@ -185,7 +187,7 @@ class TestIncidentReports(unittest.TestCase):
 
         # assert
         self.assertEqual(200, response.status_code)
-        self.assertEqual(status, response.get_json()['status'])
+        self.assertEqual(status, response.get_json()['data']['status'])
 
 
 if __name__ == "__main__":
