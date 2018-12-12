@@ -1,9 +1,31 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
+from psycopg2 import Error
 
 from app.api.v1 import version_one as v1
 from app.api.v2 import version_two as v2
 from instance.config import app_config
+
+
+@v2.app_errorhandler(Exception)
+def handle_error(error):
+    response = None
+    status_code = 500
+
+    if isinstance(error, Error):
+        response = {
+            'message': 'Database error. Could not complete requested database transaction.',
+        }
+
+    if isinstance(error, Exception):
+        response = {
+            'message': 'Could not complete your request'
+        }
+        status_code = 400
+
+    response.update({'status': status_code})
+
+    return jsonify(response), status_code
 
 
 def create_app(config_name):

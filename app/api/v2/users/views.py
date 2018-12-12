@@ -145,8 +145,6 @@ class Login(Resource, ApiResponse):
 
         users = self.db.where('username', data['username'])
 
-        print(users)
-
         if not users:
             return self.respondUnauthorized(auth_failure_message)
 

@@ -67,7 +67,6 @@ class UserModel(DatabaseModel):
             self.table, key, value)
         self.curr.execute(query)
         result = self.curr.fetchone()
-        print(result)
         return result['count']
 
     def clear(self):

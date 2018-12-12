@@ -165,7 +165,7 @@ class UserIncidents(Resource, ApiResponse):
         incident_records = self.db.where('created_by', user['id'])
 
         incident_records = IncidentSchema(many=True).dump(incident_records)[0]
-        
+
         return self.respond({'data': incident_records})
 
 
