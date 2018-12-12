@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+
+<title>iReporter</title>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <div>
+        <nav class="p-1">
+            <div class="container">
+                <div class="header-top black">
+                    <h1 class="">iReporter</h1>
+        
+                    <div class="flex header-nav item-center">
+                        <a class="black text-normal" href="dashboard.html">Dashboard</a>
+                        <a class="black text-normal" href="profile.html">Profile</a>
+                        <a class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="flex">
+            <div class="w-quarter content-wrap">
+                <div class="flex flex-column content-left px-3-md pt-6 tab">
+                    <span id="defaultOpen" class="flex flex-wrap pt-2" onclick="switchTab(event, 'red_flag')">
+                        <a class="font-monseratt grey-light bold tablinks" href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
+                    </span>
+                    <span class="flex flex-wrap pt-2 tablinks" onclick="switchTab(event, 'intervention')">
+                        <a class="font-monseratt grey-light bold" href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
+                    </span>
+                </div>
+            </div>
+
+            <div class="w-rem bg-grey-lighter">
+                <div class="flex-container flex-column w-full">
+                    <div class="card border-rounded-sm box-shadow-sm w-80 h-90">
+                        <div class="flex flex-column w-full px-3-md" action="login.html" method="POST">
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">ID</div>
+                                <div class="font-monseratt grey-light w-70 m-1">1</div>
+                            </div>
+
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">Title</div>
+                                <div class="font-monseratt grey-light w-70 m-1">Police bribery</div>
+                            </div>
+                                                      
+
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">Record Type</div>
+                                <div class="font-monseratt grey-light w-70 m-1">Red Flag</div>
+                            </div>
+
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">Location</div>
+                                <div class="font-monseratt grey-light w-70 m-1">Nduboini, Uthiru</div>
+                            </div>
+
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">Status</div>
+                                <div class="font-monseratt grey-light w-70 m-1">Under Investigation</div>
+                            </div>
+                            
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt grey-light w-30 m-1">Description</div>
+                                <p class="font-monseratt grey-light w-70 m-1">
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam, minus. Laborum, nostrum ducimus provident omnis illum nesciunt suscipit ex sequi rerum, minus ab. Quaerat facere nulla voluptates. Dolorum, quos inventore.
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis laudantium sunt iusto molestias harum, quis quia esse laborum? Maxime obcaecati deserunt temporibus, amet sunt eaque aliquam quidem totam laboriosam unde!
+                                </p>
+                            </div>
+                                     
+                            <div class="flex item-center border-bottom-sm">
+                                <div class="font-monseratt w-30 m-1">Image</div>
+                                <div class="w-70 m-1">
+                                    <img class="pt-2 pb-2" src="https://via.placeholder.com/300/09f/fff.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+</body>
+</html>

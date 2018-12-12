@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>iReporter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="css/app.css" />
+</head>
+<body>
+    <div class="flex-container flex-column">
+        <div class="card card-sm border-rounded-sm box-shadow-sm">
+            <form class="flex flex-column" action="profile.html" method="POST">
+
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="email">Email</label>
+                    <input type="email" name="email">
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="password">Password</label>
+                    <input type="password" name="password">
+                </div>
+                
+                <div class="flex footer">
+                    <div class="form-control form-input">
+                        <input type="checkbox" name="remember" id="remember">
+                        <label class="bold" for="rememberme">Remember me</label>
+                    </div>
+
+                    <a class="bold blue-lighter font-monseratt fs-1" href="#">Forgot your password?</a>
+                </div>
+                <div class="form-control"> 
+                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt">Log In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

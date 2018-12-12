@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>iReporter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="css/app.css" />
+</head>
+<body>
+    <div class="flex-container flex-column">
+        <div class="card card-sm border-rounded-sm box-shadow-sm">
+            <form class="flex flex-column" action="login.html" method="POST">
+                <div class="flex flex-column item-center">
+                    <h1 class="text-larger bold">iReporter</h1>
+                </div>
+                <div class="form-control form-input">
+                        <label class="font-monseratt fs-1" for="name">Full Name</label>
+                        <input type="text" name="name">
+                    </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="email">Email</label>
+                    <input type="email" name="email">
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="password">Password</label>
+                    <input type="password" name="password"> 
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="password_confirm">Confirm Password</label>
+                    <input type="password" name="password_confirm"> 
+                </div>
+                
+                <div class="flex">
+                    <a class="blue-lighter p-1 fs-1" href="login.html">Already have an account?</a>
+                </div>
+                <div class="form-control"> 
+                    <button class="white w-full bg-black white tm border btn font-monseratt  fs-1">Sign Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
