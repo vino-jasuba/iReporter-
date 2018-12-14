@@ -4,6 +4,7 @@ from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.api.utils.api_response import ApiResponse
+from app.api.v2.roles.roles import is_admin
 from .models import UserModel
 from .schema import UserSchema
 
@@ -113,10 +114,9 @@ class Register(Resource, ApiResponse):
             'phoneNumber': "",
             'username': data['username'] if data['username'] else data['email'],
             'password': generate_password_hash(data['password']),
-            'isAdmin': False
         }
 
-        self.db.save(user)
+        user = self.db.save(user)
 
         response = UserSchema(exclude=['password']).dump(user)[0]
         return self.respondEntityCreated({'data': response, 'message': 'Successfully created user'})
@@ -152,7 +152,8 @@ class Login(Resource, ApiResponse):
 
         if check_password_hash(user['password'], data['password']):
             return self.respond({
-                'access_token': create_access_token(UserSchema(exclude=['password']).dump(user)[0]),
+                'access_token': create_access_token(UserSchema(exclude=['password']).dump(user)[0],
+                                                    expires_delta=False),
                 'refresh_token': create_refresh_token(UserSchema(exclude=['password']).dump(user)[0]),
                 'message': 'successfully authenticated user'
             })

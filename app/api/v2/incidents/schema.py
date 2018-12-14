@@ -5,8 +5,10 @@ from app.api.utils.validator import not_empty, latitude, longitude, valid_type
 class LocationSchema(Schema):
     lat = fields.Float(required=True, validate=(not_empty, latitude),
                        error_messages={'validator_failed': 'invalid latitude coordinate'})
-    lng = fields.Float(required=True, valid=(not_empty, longitude),
+    lng = fields.Float(required=True, validate=(not_empty, longitude),
                        error_messages={'validator_failed': 'invalid longitude coordinate'})
+    # city = fields.Str(required=True, validate=(not_empty),
+    #                   error_messages={'validator_failed': 'you should provide a city'})
 
 
 class IncidentSchema(Schema):

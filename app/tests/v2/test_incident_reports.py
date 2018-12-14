@@ -3,8 +3,6 @@ import unittest
 from flask import g
 from app import create_app
 from app.api.v2.incidents.models import IncidentModel
-from app.api.v2.users.models import UserModel
-from app.api.v2.roles.roles import Role
 from manage import migrate, truncate, seed
 
 
@@ -175,6 +173,16 @@ class TestIncidentReports(unittest.TestCase):
         self.assertEqual(choice, response_data['id'])
         self.assertEqual('record with id {} has been deleted'.format(choice), response_data['message'])
 
+    def test_find_or_fail_returns_404(self):
+        # setup 
+        # act 
+        response = self.client.delete('api/v2/incidents/45', headers=self.headers)
+
+        # assert 
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'message': 'resource not found', 'status': 404}, response.get_json())
+
+
     def test_admin_updates_incident_status(self):
         # setup
         IncidentModel().save(self.intervention_record)
@@ -186,6 +194,7 @@ class TestIncidentReports(unittest.TestCase):
         }, headers=self.headers)
 
         # assert
+        print(response.get_json())
         self.assertEqual(200, response.status_code)
         self.assertEqual(status, response.get_json()['data']['status'])
 

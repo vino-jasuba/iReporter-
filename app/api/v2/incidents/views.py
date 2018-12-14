@@ -3,6 +3,7 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from app.api.utils.api_response import ApiResponse
+from app.api.v2.roles.roles import is_admin
 from .models import IncidentModel
 from .schema import IncidentSchema, IncidentUpdateSchema
 
@@ -32,7 +33,7 @@ class Incident(Resource, ApiResponse):
     def patch(self, incident_id):
         """update resource with the given id."""
 
-        data, errors = IncidentUpdateSchema().load(request.get_json())
+        data, errors = IncidentUpdateSchema(exclude=['status']).load(request.get_json())
 
         if errors:
             return self.respond({'message': 'failed to update record', 'errors': errors})
@@ -47,6 +48,9 @@ class Incident(Resource, ApiResponse):
         if not incident:
             return self.respondNotFound()
 
+        if incident['created_by'] != get_jwt_identity()['id']:
+            return self.respondUnauthorized('You do not have permission to update this record')
+
         incident = self.db.update(incident_id, data)
         incident = IncidentSchema().dump(incident)[0]
 
@@ -55,15 +59,16 @@ class Incident(Resource, ApiResponse):
     @jwt_required
     def delete(self, incident_id):
         """remove resource with the given id from the model."""
+        incident = self.db.find_or_fail(incident_id)
+        
+        if incident['created_by'] != get_jwt_identity()['id']:
+            return self.respondUnauthorized('You do not have permission to update this record')
 
-        deleted_record = self.db.delete(incident_id)
+        self.db.delete(incident_id)
 
-        if deleted_record:
-            message = 'record with id {} has been deleted'.format(incident_id)
-            data = {'id': incident_id, 'message': message}
-            return self.respond(data)
-        else:
-            return self.respondNotFound()
+        message = 'record with id {} has been deleted'.format(incident_id)
+        data = {'id': incident_id, 'message': message}
+        return self.respond(data)
 
 
 class IncidentList(Resource, ApiResponse):
@@ -139,13 +144,13 @@ class IncidentManager(Resource, ApiResponse):
         """Update the status of an incident record"""
         data = request.get_json()
 
+        if not is_admin(get_jwt_identity()):
+            return self.respondUnauthorized('You do not have permission to perform this action')
+
         if data['status'] not in self.db.statuses:
             return self.respondUnprocessibleEntity('\'{}\' is not valid status')
 
-        incident = self.db.find(incident_id)
-
-        if not incident:
-            return self.respondNotFound()
+        self.db.find_or_fail(incident_id)
 
         incident = self.db.update(incident_id, data)
         incident = IncidentSchema().dump(incident)[0]
@@ -159,7 +164,6 @@ class UserIncidents(Resource, ApiResponse):
 
     @jwt_required
     def get(self):
-
         user = get_jwt_identity()
 
         incident_records = self.db.where('created_by', user['id'])
@@ -167,5 +171,3 @@ class UserIncidents(Resource, ApiResponse):
         incident_records = IncidentSchema(many=True).dump(incident_records)[0]
 
         return self.respond({'data': incident_records})
-
-

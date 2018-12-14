@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields
-
+from marshmallow import Schema, fields, pre_dump, pre_load
 from app.api.utils.validator import not_empty, strong_password
+from psycopg2.extras import RealDictCursor
+from flask import g
 
 
 class UserSchema(Schema):
@@ -14,3 +15,21 @@ class UserSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True, validate=(not_empty, strong_password))
     registered = fields.DateTime(required=False, format='%b, %d, %Y')
+    isAdmin = fields.Bool(required=False)
+
+    @pre_dump
+    def role(self, data):
+        role = data['role']
+
+        conn = g.conn
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        cursor.execute("SELECT * FROM roles WHERE id = {}".format(role))
+        role = cursor.fetchone()
+
+        if role['role_slug'] == 'admin':
+            data['isAdmin'] = True
+        else:
+            data['isAdmin'] = False
+
+        return data

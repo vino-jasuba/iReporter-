@@ -1,11 +1,12 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from psycopg2 import Error
+from flask_cors import CORS
 
 from app.api.v1 import version_one as v1
 from app.api.v2 import version_two as v2
 from instance.config import app_config
-
+from app.api.utils.databasemodel import ModelNotFound
 
 @v2.app_errorhandler(Exception)
 def handle_error(error):
@@ -17,11 +18,20 @@ def handle_error(error):
             'message': 'Database error. Could not complete requested database transaction.',
         }
 
-    if isinstance(error, Exception):
+        status_code = 404 
+    elif isinstance(error, ModelNotFound):
+        response = {
+            'message': 'resource not found'
+        }
+        
+        status_code = 404 
+
+    elif isinstance(error, Exception):
         response = {
             'message': 'Could not complete your request'
         }
         status_code = 400
+    
 
     response.update({'status': status_code})
 
@@ -37,4 +47,6 @@ def create_app(config_name):
     app.register_blueprint(v2)
     app.config.from_object(app_config[config_name])
     JWTManager(app)
+    CORS(app)
+
     return app
