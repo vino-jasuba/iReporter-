@@ -11,29 +11,35 @@
 <body>
     <div class="flex-container flex-column">
         <div class="card card-sm border-rounded-sm box-shadow-sm">
-            <form class="flex flex-column" action="login.html" method="POST">
-                <div class="flex flex-column item-center">
-                    <h1 class="text-larger bold">iReporter</h1>
-                </div>
-                <div class="form-control form-input">
-                        <label class="font-monseratt fs-1" for="name">Full Name</label>
-                        <input type="text" name="name">
-                    </div>
+            <form class="flex flex-column" method="POST" onsubmit="event.preventDefault(); signup()">
                 <div class="form-control form-input">
                     <label class="font-monseratt fs-1" for="email">Email</label>
-                    <input type="email" name="email">
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="email">First Name</label>
+                    <input type="text" name="firstname" required>
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="email">Last Name</label>
+                    <input type="text" name="lastname" required>
+                </div>
+                <div class="form-control form-input">
+                    <label class="font-monseratt fs-1" for="email">Username</label>
+                    <input type="text" name="username" required>
                 </div>
                 <div class="form-control form-input">
                     <label class="font-monseratt fs-1" for="password">Password</label>
-                    <input type="password" name="password"> 
-                </div>
-                <div class="form-control form-input">
-                    <label class="font-monseratt fs-1" for="password_confirm">Confirm Password</label>
-                    <input type="password" name="password_confirm"> 
+                    <input type="password" name="password" required>
                 </div>
                 
-                <div class="flex">
-                    <a class="blue-lighter p-1 fs-1" href="login.html">Already have an account?</a>
+                <div class="flex footer">
+                    <div class="form-control form-input">
+                        <input type="checkbox" name="remember" id="remember">
+                        <label class="bold" for="rememberme">Remember me</label>
+                    </div>
+
+                    <a class="bold blue-lighter font-monseratt fs-1" href="#">Forgot your password?</a>
                 </div>
                 <div class="form-control"> 
                     <button class="white w-full bg-black white tm border btn font-monseratt  fs-1">Sign Up</button>
@@ -41,5 +47,47 @@
             </form>
         </div>
     </div>
+<script>
+    function signup() {
+
+        signupUrl = 'http://127.0.0.1:5000/api/v2/auth/signup'
+
+        username = document.getElementsByName("username")[0].value
+        password = document.getElementsByName("password")[0].value
+        email = document.getElementsByName("email")[0].value
+        firstname = document.getElementsByName("firstname")[0].value
+        lastname = document.getElementsByName("lastname")[0].value
+
+        formData = {
+            username: username,
+            password: password,
+            email: email,
+            firstname: firstname,
+            lastname: lastname
+        }
+
+        request = new Request(signupUrl, {
+            method: 'post',
+            body: JSON.stringify(formData),
+            headers: {"Content-Type": "application/json"}
+        })
+
+        fetch(request)
+        .then(response => {
+            if (!response.ok) {
+                throw Error(response.statusText)
+            }
+
+            return response
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data)
+            localStorage.setItem('user', data.data)
+            window.location = 'login.html'
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+</script>
 </body>
 </html>

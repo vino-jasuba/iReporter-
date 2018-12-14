@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link rel="stylesheet" href="css/app.css">
-<script src="js/app.js"></script>
 </head>
 <body>
     <div>
@@ -46,7 +45,7 @@
                 
                     <div class="flex-container flex-column h-full mt-4 mb-4">
                         <div class="card card-lg border-rounded-sm box-shadow-sm">
-                            <form class="flex flex-column" action="#" method="POST">
+                            <form class="flex flex-column" onsubmit="event.preventDefault(); createIncidentRecord()">
                 
                                 <div class="form-control form-input">
                                     <label class="font-monseratt fs-1" for="email">Title</label>
@@ -59,7 +58,7 @@
                                 <div class="form-control form-input">
                                     <label for="record_type" class="font-monseratt">Record Type</label>
                                     <br>
-                                    <select class="font-monseratt fs-1" name="record_type" id="record_type">
+                                    <select class="font-monseratt fs-1" name="incident_type" id="record_type">
                                         <option value="red_flag">Red Flag</option>
                                         <option value="intervention">Intervention</option>
                                     </select>
@@ -85,4 +84,52 @@
         </div>
     </div>
 </body>
+<script>
+    function createIncidentRecord() {
+        incident_dropdown = document.getElementsByName('incident_type')[0]
+        choice = incident_dropdown.options[incident_dropdown.selectedIndex].value
+
+        formData = {
+            incident_type: choice,
+            description: document.getElementsByName('description')[0].value,
+            title: document.getElementsByName('title')[0].value,
+            location: {
+                lat: -1.234,
+                lng: 23.121
+            }
+        }
+        
+        console.log('creating new record')
+        postData('http://127.0.0.1:5000/api/v2/incidents', formData)
+        console.log('created new record')
+    }
+
+    function postData(url, data) {
+
+        token = localStorage.getItem('auth_token')
+        request = new Request(url, {
+            method: 'post',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        })
+
+        fetch(request)
+        .then(response => {
+            if (!response.ok) {
+                throw Error(response.statusText)
+            }
+
+            return response
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data)
+            localStorage.setItem('user', data.data)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+</script>
 </html>
