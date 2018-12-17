@@ -1,9 +1,12 @@
 import datetime
-from flask import request
+import os
+from flask import request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
+from flask_mail import Message
 from app.api.utils.api_response import ApiResponse
 from app.api.v2.roles.roles import is_admin
+from app.api.v2.users.models import UserModel
 from .models import IncidentModel
 from .schema import IncidentSchema, IncidentUpdateSchema
 
@@ -161,6 +164,22 @@ class IncidentManager(Resource, ApiResponse):
         self.db.find_or_fail(incident_id)
 
         incident = self.db.update(incident_id, data)
+
+        msg = "The status of your {} [\"{}\"] has been changed to {}".format(incident['incident_type'],
+                                                                             incident['title'], incident['status'])
+
+        # with current_app.app_context():
+        #     from app import mail
+        #     import settings
+        #     try:
+        #         user = UserModel().find_or_fail(incident['created_by'])
+        #         message = Message(msg, sender=os.getenv('MAIL_FROM'), recipients=[])
+        #         mail.send(message)
+        #         print(os.getenv('MAIL_FROM'))
+        #     except Exception as e:
+        #         print(os.getenv('MAIL_FROM'))
+        #         print(e)
+
         incident = IncidentSchema().dump(incident)[0]
         return self.respond({'data': incident, 'message': 'successfully updated record'})
 
