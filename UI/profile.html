@@ -12,7 +12,8 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  </head>
+    <script src="js/app.js"></script>
+</head>
   <body>
       <div>
         <nav class="p-1">
@@ -23,7 +24,7 @@
                     <div class="flex header-nav item-center">
                         <a class="black text-normal" href="dashboard.html">Dashboard</a>
                         <a class="black text-normal" href="profile.html">Profile</a>
-                        <a class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
+                        <a id="signup" class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
                     </div>
                 </div>
             </div>
@@ -65,20 +66,20 @@
                     <div class="h-full">
                         <div class="px-1">
                             <label for="name">Name: &nbsp;</label>
-                            <span class="font-monseratt">Vincent Jasuba</span>
+                            <span id="name" class="font-monseratt">Vincent Jasuba</span>
                         </div>
         
                         <div class="px-1">
                             <div>
                                 <label for="email">Email: &nbsp;</label>
-                                <span class="font-monseratt">ovincent7949@gmail.com</span>
+                                <span id="email" class="font-monseratt">ovincent7949@gmail.com</span>
                             </div>
                         </div>
                         
                         <div class="px-1">
                             <div>
                                 <label for="role">Role: &nbsp;</label>
-                                <span class="font-monseratt">User</span>
+                                <span id="user_role" class="font-monseratt">User</span>
                             </div>
                         </div>
 
@@ -94,9 +95,9 @@
                             <a href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
 
                             <div class="flex flex-column">
-                                <span class="font-monseratt mt-1">Accepted: <strong>10</strong></span>
-                                <span class="font-monseratt">Rejected: <strong>2</strong></span>
-                                <span class="font-monseratt">Under Investigation: <strong>1</strong></span>
+                                <span id="accepted_rf" class="font-monseratt mt-1">Accepted: <strong>10</strong></span>
+                                <span id="rejected_rf" class="font-monseratt">Rejected: <strong>2</strong></span>
+                                <span id="pending_rf" class="font-monseratt">Under Investigation: <strong>1</strong></span>
                             </div>
 
                         </div>
@@ -105,9 +106,9 @@
                             <a href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
 
                             <div class="flex flex-column">
-                                <span class="font-monseratt mt-1">Accepted: <strong>2</strong></span>
-                                <span class="font-monseratt">Rejected: <strong>7</strong></span>
-                                <span class="font-monseratt">Under Investigation: <strong>0</strong></span>
+                                <span id="accepted_ir" class="font-monseratt mt-1">Accepted: <strong>2</strong></span>
+                                <span id="rejected_ir" class="font-monseratt">Rejected: <strong>7</strong></span>
+                                <span id="pending_ir" class="font-monseratt">Under Investigation: <strong>0</strong></span>
                             </div>
 
                         </div>
@@ -116,98 +117,58 @@
                 <div class="flex flex-column mt-2 mb-2">
 
                     <div class="flex justify-end mr-4 mt-2">
-                        <a class="black font-monseratt border signup-button box-shadow bg-blue-lighter" href="new_record.html">New Record</a>
+                        <a class="black font-monseratt border signup-button box-shadow bg-blue-lighter" href="new_record.html">New Incident</a>
                     </div>
                     
-                    <table>
-                        <tr class="font-monseratt fs-sm grey-light">
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                            <th></th>
-                        </tr>
-                        <tr class="font-monseratt fs-sm grey-light">
-                            <td>1</td>
-                            <td>Police officer taking bribe</td>
-                            <td>RF</td>
-                            <td>Mugumoini, Langata</td>
-                            <td>Resolved</td>
-                            <td>12 Aug 2017</td>
-                            <td>
-                                <div class="flex">
-                                    <span class="px-sm">
-                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="#"><i class="fas fa-trash"></i></a>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="font-monseratt fs-sm grey-light">
-                            <td>2</td>
-                            <td>Pot holes in main road</td>
-                            <td>IR</td>
-                            <td>Kapkwony, Marsabit</td>
-                            <td>Rejected</td>
-                            <td>07 Jan 2016</td>
-                            <td>
-                                <div class="flex">
-                                    <span class="px-sm">
-                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="#"><i class="fas fa-trash"></i></a>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="font-monseratt fs-sm grey-light">
-                            <td>3</td>
-                            <td>Magistrate asking for bribe</td>
-                            <td>RF</td>
-                            <td>Milimani, Nairobi</td>
-                            <td>Draft</td>
-                            <td>21 Nov 2018</td>
-                            <td>
-                                <div class="flex">
-                                    <span class="px-sm">
-                                        <a href="view_record.html"><i class="fas fa-eye"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="edit_record.html"><i class="fas fa-edit"></i></a>
-                                    </span>
-                                    <span class="px-sm">
-                                        <a href="#"><i class="fas fa-trash"></i></a>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="7">
-                                <div class="flex space-between w-full">
-                                    <span class="font-monseratt fs-sm px-3 btn-sm box-shadow"><a href="#">Prev</a></span>
-                                    <span class="font-monseratt fs-sm px-3 btn-sm box-shadow"><a href="#">Next</a></span>
-                                </div>
-                            </td>
-                        </tr>
-    
+                    <table id="user_records">
+                        <thead>
+                            <tr class="font-monseratt fs-sm grey-light">
+                                <th></th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by js -->
+                        </tbody>
                     </table>        
                 </div>
             </div>
         </div>
       </div>
       <script>
-         console.log(localStorage.getItem('auth_token'))
+        if (localStorage.getItem('auth_token')) {
+            document.getElementById('signup').style = 'display: none;'
+        }
+
+        url = baseUrl + 'users/incidents'
+
+        get(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.data)
+            columns = ['id', 'title', 'incident_type', 'location', 'status', 'created_at']
+            renderTableContent('user_records', columns, data.data)
+        }).catch(error => {
+            console.log(error)
+        })
+
+        function statistics(collection) {
+            resultSet = {
+                accepted_rf: 0,
+                rejected_rf: 0,
+                pending_rf: 0,
+                accepted_ir: 0,
+                rejected_ir: 0,
+                pending_ir: 0
+            }
+
+            console.log(resultSet)
+        }
       </script>
   </body>
 </html>
