@@ -153,6 +153,7 @@
             console.log(data.data)
             columns = ['id', 'title', 'incident_type', 'location', 'status', 'created_at']
             renderTableContent('user_records', columns, data.data)
+            userProfile()
         }).catch(error => {
             console.log(error)
         })
