@@ -5,13 +5,16 @@ class UserModel(DatabaseModel):
     table = 'users'
 
     def save(self, data):
-        query = "INSERT INTO {} (firstname, lastname, username, email, password)" \
-                " VALUES ('{}', '{}', '{}', '{}', '{}') RETURNING {}.*".format(
-                    self.table, data['firstname'],
-                    data['lastname'], data['username'], data['email'],
-                    data['password'], self.table)
+        firstname_ = data['firstname']
+        lastname_ = data['lastname']
+        username_ = data['username']
+        email_ = data['email']
+        password_ = data['password']
 
-        self.curr.execute(query)
+        query = "INSERT INTO {} (firstname, lastname, username, email, password)" \
+                " VALUES (%s, %s, %s, %s, %s) RETURNING {}.*".format(self.table, self.table)
+
+        self.curr.execute(query, (firstname_, lastname_, username_, email_, password_))
         self.conn.commit()
         return self.curr.fetchone()
 

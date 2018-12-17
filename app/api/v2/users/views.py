@@ -1,8 +1,7 @@
 from flask import request
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from app.api.utils.api_response import ApiResponse
 from app.api.v2.roles.roles import is_admin
 from .models import UserModel
@@ -57,6 +56,18 @@ class User(Resource, ApiResponse):
             return self.respond(data)
         else:
             return self.respondNotFound()
+
+
+class UserProfile(Resource, ApiResponse):
+    """Represents a resource class used to interact with
+    auth users
+    """
+
+    @jwt_required
+    def get(self):
+        user = get_jwt_identity()
+
+        return user
 
 
 class UserList(Resource, ApiResponse):

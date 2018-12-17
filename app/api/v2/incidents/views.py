@@ -60,7 +60,7 @@ class Incident(Resource, ApiResponse):
     def delete(self, incident_id):
         """remove resource with the given id from the model."""
         incident = self.db.find_or_fail(incident_id)
-        
+
         if incident['created_by'] != get_jwt_identity()['id']:
             return self.respondUnauthorized('You do not have permission to update this record')
 
@@ -147,6 +147,14 @@ class IncidentManager(Resource, ApiResponse):
         if not is_admin(get_jwt_identity()):
             return self.respondUnauthorized('You do not have permission to perform this action')
 
+        data, errors = IncidentUpdateSchema().load(data)
+
+        if errors:
+            self.respondUnprocessibleEntity({
+                'errors': errors,
+                'message': 'Invalid data received'
+            })
+
         if data['status'] not in self.db.statuses:
             return self.respondUnprocessibleEntity('\'{}\' is not valid status')
 
@@ -158,6 +166,9 @@ class IncidentManager(Resource, ApiResponse):
 
 
 class UserIncidents(Resource, ApiResponse):
+    """Represents a Resource for fetching incident records created by the
+    currently auth user
+    """
 
     def __init__(self):
         self.db = IncidentModel()
@@ -171,3 +182,12 @@ class UserIncidents(Resource, ApiResponse):
         incident_records = IncidentSchema(many=True).dump(incident_records)[0]
 
         return self.respond({'data': incident_records})
+
+
+class IncidentStatus(Resource, ApiResponse):
+    """Represents a Resource for fetching list of statuses that an incident
+    record can take
+    """
+
+    def get(self):
+        return IncidentModel.statuses

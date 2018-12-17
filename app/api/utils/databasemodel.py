@@ -34,7 +34,7 @@ class DatabaseModel(AbstractModel):
     def find_or_fail(self, id):
         """Find a record with a given id or fail"""
         record = self.find(id)
-        # todo: customize this exception so that we return a {'message': 'resource not found' , 'status': 404}
+
         if not record:
             raise ModelNotFound()
 
@@ -44,11 +44,7 @@ class DatabaseModel(AbstractModel):
         string = ""
 
         for key, value in data.items():
-            if key == 'location':
-                string += "latitude = '{}'".format(value['lat']) + ","
-                string += "longitude = '{}'".format(value['lng']) + ","
-            else:
-                string += "{}".format(key) + " = " + "'{}'".format(value) + ","
+            string += "{}".format(key) + " = " + "%s".format(value) + ","
 
         return string[:-1]
 
@@ -57,13 +53,13 @@ class DatabaseModel(AbstractModel):
             self.table, self.__update_string(data), id, self.table
         )
 
-        self.curr.execute(query)
+        self.curr.execute(query, tuple(data.values()))
         self.conn.commit()
         return self.curr.fetchone()
 
     def find(self, id):
-        query = "SELECT * FROM {} WHERE id = {}".format(self.table, id)
-        self.curr.execute(query)
+        query = "SELECT * FROM {} WHERE id = %s".format(self.table, id)
+        self.curr.execute(query, (id,))
 
         results = self.curr.fetchone()
 
@@ -73,22 +69,22 @@ class DatabaseModel(AbstractModel):
         return None
 
     def delete(self, id):
-        query = "DELETE FROM {} WHERE id = {}".format(self.table, id)
-        self.curr.execute(query)
+        query = "DELETE FROM {} WHERE id = %s".format(self.table)
+        self.curr.execute(query, (id,))
         self.conn.commit()
         return True
 
     def where(self, key, value):
-        query = "SELECT * FROM {} WHERE {} = '{}'".format(
-            self.table, key, value)
+        query = "SELECT * FROM {} WHERE {} = %s".format(
+            self.table, key)
 
-        self.curr.execute(query)
+        self.curr.execute(query, (value,))
         return self.curr.fetchall()
 
     def exists(self, key, value):
-        query = "SELECT COUNT (*) FROM {} WHERE {} = '{}'".format(
-            self.table, key, value)
-        self.curr.execute(query)
+        query = "SELECT COUNT (*) FROM {} WHERE {} = %s".format(
+            self.table, key)
+        self.curr.execute(query, (value,))
         
         result = self.curr.fetchone()
 
