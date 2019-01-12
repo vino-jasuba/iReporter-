@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link rel="stylesheet" href="css/app.css">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLhtMsy7x0mDj8a3UWU6KmDZ7jD10-vic&libraries=places"></script>
 <script src="js/app.js"></script>
 </head>
 <body>
@@ -46,7 +47,7 @@
                 
                     <div class="flex-container flex-column h-full mt-4 mb-4">
                         <div class="card card-lg border-rounded-sm box-shadow-sm">
-                            <form class="flex flex-column" action="#" method="POST">
+                            <form class="flex flex-column" onsubmit="event.preventDefault(); createIncidentRecord()">
                 
                                 <div class="form-control form-input">
                                     <label class="font-monseratt fs-1" for="email">Title</label>
@@ -54,12 +55,12 @@
                                 </div>
                                 <div class="form-control form-input">
                                     <label for="location" class="font-monseratt fs-1">Location</label>
-                                    <input class="font-monseratt fs-1" name="location" type="text" placeholder="Start typing for places suggestions ...">
+                                    <input required class="font-monseratt fs-1" name="location" onkeyup="locationSearch()" type="text" placeholder="Start typing for places suggestions ...">
                                 </div>
                                 <div class="form-control form-input">
                                     <label for="record_type" class="font-monseratt">Record Type</label>
                                     <br>
-                                    <select class="font-monseratt fs-1" name="record_type" id="record_type">
+                                    <select required class="font-monseratt fs-1" name="incident_type" id="record_type">
                                         <option value="red_flag">Red Flag</option>
                                         <option value="intervention">Intervention</option>
                                     </select>
@@ -67,7 +68,7 @@
                                 <div class="form-control form-input">
                                     <label class="font-monseratt fs-1" for="description">Description</label>
                                     <br>
-                                    <textarea class="font-monseratt fs-1" name="description" id="description" cols="30" rows="10"></textarea>
+                                    <textarea required class="font-monseratt fs-1" name="description" id="description" cols="30" rows="10"></textarea>
                                 </div>
                                 <div class="form-control form-input">
                                     <label for="media" class="font-monseratt fs-1">Media</label>
@@ -85,4 +86,51 @@
         </div>
     </div>
 </body>
+<script>
+
+    locationObject = {}
+
+    function createIncidentRecord() {
+        incident_dropdown = document.getElementsByName('incident_type')[0]
+        choice = incident_dropdown.options[incident_dropdown.selectedIndex].value
+
+        formData = {
+            incident_type: choice,
+            description: document.getElementsByName('description')[0].value,
+            title: document.getElementsByName('title')[0].value,
+            location: locationObject
+        }
+        
+        console.log('creating new record')
+        postData(baseUrl + 'incidents', formData)
+        console.log('created new record')
+    }
+
+    function postData(url, data) {
+
+        token = localStorage.getItem('auth_token')
+        request = new Request(url, {
+            method: 'post',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        })
+
+        fetch(request)
+        .then(response => {
+            if (!response.ok) {
+                throw Error(response.statusText)
+            }
+
+            return response
+        }).then(response => response.json())
+        .then(data => {
+            window.location = 'dashboard.html'
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+</script>
 </html>

@@ -90,7 +90,7 @@ tr:nth-child(odd) {
 
 .header-nav {
     width: 25em;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .header-top a {
@@ -550,5 +550,9 @@ form {
 }
 
 .close:hover {
+    cursor: pointer;
+}
+
+.pointer {
     cursor: pointer;
 }

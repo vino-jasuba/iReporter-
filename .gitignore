@@ -1,0 +1,9 @@
+env/*
+.vscode/
+*pyc
+.coverage 
+.env
+.idea/
+.idea/*
+node_modules/
+

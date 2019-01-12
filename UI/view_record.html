@@ -12,8 +12,9 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link rel="stylesheet" href="css/app.css">
+<script src="js/app.js"></script>
 </head>
-<body>
+<body onload="bindModel()">
     <div>
         <nav class="p-1">
             <div class="container">
@@ -23,7 +24,7 @@
                     <div class="flex header-nav item-center">
                         <a class="black text-normal" href="dashboard.html">Dashboard</a>
                         <a class="black text-normal" href="profile.html">Profile</a>
-                        <a class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
+                        <a id="signup" class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
                     </div>
                 </div>
             </div>
@@ -32,10 +33,10 @@
         <div class="flex">
             <div class="w-quarter content-wrap">
                 <div class="flex flex-column content-left px-3-md pt-6 tab">
-                    <span id="defaultOpen" class="flex flex-wrap pt-2" onclick="switchTab(event, 'red_flag')">
+                    <span id="defaultOpen" class="flex flex-wrap pt-2">
                         <a class="font-monseratt grey-light bold tablinks" href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
                     </span>
-                    <span class="flex flex-wrap pt-2 tablinks" onclick="switchTab(event, 'intervention')">
+                    <span class="flex flex-wrap pt-2 tablinks">
                         <a class="font-monseratt grey-light bold" href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
                     </span>
                 </div>
@@ -47,36 +48,33 @@
                         <div class="flex flex-column w-full px-3-md" action="login.html" method="POST">
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">ID</div>
-                                <div class="font-monseratt grey-light w-70 m-1">1</div>
+                                <div id="id" class="font-monseratt grey-light w-70 m-1"></div>
                             </div>
 
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">Title</div>
-                                <div class="font-monseratt grey-light w-70 m-1">Police bribery</div>
+                                <div id="title" class="font-monseratt grey-light w-70 m-1"></div>
                             </div>
                                                       
 
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">Record Type</div>
-                                <div class="font-monseratt grey-light w-70 m-1">Red Flag</div>
+                                <div id="incident_type" class="font-monseratt grey-light w-70 m-1"></div>
                             </div>
 
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">Location</div>
-                                <div class="font-monseratt grey-light w-70 m-1">Nduboini, Uthiru</div>
+                                <div id="location" class="font-monseratt grey-light w-70 m-1"></div>
                             </div>
 
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">Status</div>
-                                <div class="font-monseratt grey-light w-70 m-1">Under Investigation</div>
+                                <div id="status" class="font-monseratt grey-light w-70 m-1"></div>
                             </div>
                             
                             <div class="flex item-center border-bottom-sm">
                                 <div class="font-monseratt grey-light w-30 m-1">Description</div>
-                                <p class="font-monseratt grey-light w-70 m-1">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam, minus. Laborum, nostrum ducimus provident omnis illum nesciunt suscipit ex sequi rerum, minus ab. Quaerat facere nulla voluptates. Dolorum, quos inventore.
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis laudantium sunt iusto molestias harum, quis quia esse laborum? Maxime obcaecati deserunt temporibus, amet sunt eaque aliquam quidem totam laboriosam unde!
-                                </p>
+                                <p id="description" class="font-monseratt grey-light w-70 m-1"></p>
                             </div>
                                      
                             <div class="flex item-center border-bottom-sm">
@@ -91,5 +89,25 @@
             </div>
         </div>
     </div>
+    <script>
+        if (localStorage.getItem('auth_token')) {
+            document.getElementById('signup').style = 'display: none;'
+        }
+
+        function bindModel() {
+            incidentModel = JSON.parse(localStorage.getItem('current_incident'))
+            console.log(incidentModel)
+            
+            columns = ['id', 'title', 'incident_type', 'location','status', 'description']
+
+            columns.map(function(column){
+                document.getElementById(column).innerHTML = incidentModel[column]
+
+                if (column == 'location') {
+                    document.getElementById(column).innerHTML = incidentModel[column]['city']
+                }
+            })
+        }
+    </script>
 </body>
 </html>
