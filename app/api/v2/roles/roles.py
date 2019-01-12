@@ -1,6 +1,10 @@
 from app.api.utils.databasemodel import DatabaseModel
 
 
+def is_admin(user):
+    return user['isAdmin']
+
+
 class Role(DatabaseModel):
     table = 'roles'
 

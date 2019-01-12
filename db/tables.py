@@ -30,8 +30,7 @@ create_table_queries = [
         title VARCHAR(191) NOT NULL,
         description TEXT NOT NULL,
         status VARCHAR(64) NOT NULL DEFAULT ('draft'),
-        latitude float NOT NULL,
-        longitude float NOT NULL, 
+        location VARCHAR(191) NOT NULL,
         created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'),
         created_by INTEGER NOT NULL,
         FOREIGN KEY (created_by) REFERENCES users(id)

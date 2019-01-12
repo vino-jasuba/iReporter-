@@ -3,9 +3,8 @@ import unittest
 from flask import g
 from app import create_app
 from app.api.v2.incidents.models import IncidentModel
-from app.api.v2.users.models import UserModel
-from app.api.v2.roles.roles import Role
 from manage import migrate, truncate, seed
+import json
 
 
 class TestIncidentReports(unittest.TestCase):
@@ -22,10 +21,11 @@ class TestIncidentReports(unittest.TestCase):
         self.red_flag = {
             "title": "NTSA Officer asking for bribe",
             "description": "lorem ipsum dolor sit amet",
-            "location": {
+            "location": json.dumps({
                 "lat": -1.23121,
-                "lng": 23.45443
-            },
+                "lng": 23.45443,
+                "city": "Mugumoini, Kapipirimo"
+            }),
             "incident_type": "red_flag",
             "created_by": 1,
             "status": "pending"
@@ -34,10 +34,11 @@ class TestIncidentReports(unittest.TestCase):
         self.intervention_record = {
             "title": "Damaged roads in Matuu",
             "description": "lorem ipsum dolor sit amet",
-            "location": {
+            "location": json.dumps({
                 "lat": -1.23121,
-                "lng": 23.45443
-            },
+                "lng": 23.45443,
+                "city": "Kagwithirimo sisters"
+            }),
             "incident_type": "intervention",
             "created_by": 1,
             "status": "pending"
@@ -77,6 +78,7 @@ class TestIncidentReports(unittest.TestCase):
 
     def test_it_creates_incident_records(self):
         # setup
+        self.red_flag['location'] = json.loads(self.red_flag['location'])
         # act
         response = self.client.post('api/v2/incidents', json=self.red_flag, headers=self.headers)
 
@@ -142,7 +144,8 @@ class TestIncidentReports(unittest.TestCase):
             'description': description,
             'location': {
                 'lat': 1.22452,
-                'lng': 23.2323
+                'lng': 23.2323,
+                'city': 'Nairobi, Kenya'
             }}, headers=self.headers)
 
         self.assertEqual(200, response.status_code)
@@ -174,6 +177,15 @@ class TestIncidentReports(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(choice, response_data['id'])
         self.assertEqual('record with id {} has been deleted'.format(choice), response_data['message'])
+
+    def test_find_or_fail_returns_404(self):
+        # setup 
+        # act 
+        response = self.client.delete('api/v2/incidents/45', headers=self.headers)
+
+        # assert 
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'message': 'resource not found', 'status': 404}, response.get_json())
 
     def test_admin_updates_incident_status(self):
         # setup
