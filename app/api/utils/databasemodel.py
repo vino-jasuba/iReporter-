@@ -12,6 +12,7 @@ class ModelNotFound(Exception):
 
 class DatabaseModel(AbstractModel):
     table = ''
+    default_search_key = 'id'
 
     def __init__(self):
         self.conn = self.get_db_connection()
@@ -58,7 +59,7 @@ class DatabaseModel(AbstractModel):
         return self.curr.fetchone()
 
     def find(self, id):
-        query = "SELECT * FROM {} WHERE id = %s".format(self.table, id)
+        query = "SELECT * FROM {} WHERE {} = %s".format(self.table, self.default_search_key)
         self.curr.execute(query, (id,))
 
         results = self.curr.fetchone()

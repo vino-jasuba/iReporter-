@@ -1,8 +1,9 @@
 from flask import Blueprint
 from flask_restful import Api
 from .incidents.views import (Incident, IncidentList, IncidenceQuery,
-                              IncidentManager, UserIncidents, IncidentStatus)
-from .users.views import User, UserList, Register, Login, UserProfile
+                              IncidentManager, UserIncidents, IncidentStatus,
+                              IncidentMedia)
+from .users.views import User, UserList, Register, Login, Logout, UserProfile
 
 version_two = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 
@@ -18,4 +19,6 @@ api.add_resource(UserIncidents, '/users/incidents')
 api.add_resource(IncidentStatus, '/statuses')
 api.add_resource(Register, '/auth/signup')
 api.add_resource(Login, '/auth/login')
+api.add_resource(Logout, '/auth/logout')
 api.add_resource(IncidentManager, '/admin/incidents/<int:incident_id>')
+api.add_resource(IncidentMedia, '/incidents/<int:incident_id>/add_media')

@@ -6,6 +6,8 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = os.getenv('APP_KEY')
+    # JWT_BLACKLIST_ENABLED = True
+    # JWT_BLACKLIST_TOKEN_CHECKS = ['access']
 
 
 class DevelopmentConfig(Config):

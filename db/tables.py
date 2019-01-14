@@ -35,19 +35,32 @@ create_table_queries = [
         created_by INTEGER NOT NULL,
         FOREIGN KEY (created_by) REFERENCES users(id)
     )
+    """,
+    """CREATE TABLE IF NOT EXISTS media (
+        id SERIAL PRIMARY KEY,
+        incident_id INTEGER NOT NULL,
+        type VARCHAR(6) NOT NULL,
+        handle VARCHAR(64) NOT NULL,
+        object_id VARCHAR(64) NOT NULL,
+        created_by INTEGER NOT NULL,
+        FOREIGN KEY (created_by) REFERENCES users(id),
+        FOREIGN KEY (incident_id) REFERENCES incidents(id)
+    )
     """
 ]
 
 tables = [
     "roles",
     "users",
-    "incidents"
+    "incidents",
+    "media"
 ]
 
 
 def truncate(connection):
     cur = connection.cursor()
-    cur.execute('TRUNCATE TABLE ' + ','.join(tables) + ' RESTART IDENTITY CASCADE')
+    cur.execute('TRUNCATE TABLE ' + ','.join(tables) +
+                ' RESTART IDENTITY CASCADE')
     connection.commit()
 
 
@@ -55,9 +68,7 @@ def drop_tables(connection):
     cur = connection.cursor()
 
     for table in tables:
-        # print(colored('Preparing to drop {} table'.format(table), 'yellow'))
         cur.execute("DROP TABLE IF EXISTS {} CASCADE".format(table))
-        # print(colored('Successfully dropped {} table'.format(table), 'green'))
     connection.commit()
 
 
@@ -65,9 +76,7 @@ def create_tables(connection):
     cur = connection.cursor()
 
     for query in create_table_queries:
-        # print(colored('Migrating {} table'.format(query.split(' ')[5]), 'yellow'))
         cur.execute(query)
-        # print(colored('Successfully created {} table'.format(query.split(' ')[5]), 'green'))
     connection.commit()
 
 
