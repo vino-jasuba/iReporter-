@@ -33,15 +33,11 @@
                     <label class="font-monseratt fs-1" for="password">Password</label>
                     <input type="password" name="password" required>
                 </div>
-                
-                <div class="flex footer">
-                    <div class="form-control form-input">
-                        <input type="checkbox" name="remember" id="remember">
-                        <label class="bold" for="rememberme">Remember me</label>
-                    </div>
 
-                    <a class="bold blue-lighter font-monseratt fs-1" href="#">Forgot your password?</a>
+                <div class="flex flex-column form-control">
+                    <a href="login.html" class="bold blue-lighter font-monseratt text-center">Already have an account? Sign In</a>
                 </div>
+
                 <div class="form-control"> 
                     <button class="white w-full bg-black white tm border btn font-monseratt  fs-1">Sign Up</button>
                 </div>
@@ -49,46 +45,7 @@
         </div>
     </div>
 <script>
-    function signup() {
-
-        signupUrl = baseUrl + 'auth/signup'
-
-        username = document.getElementsByName("username")[0].value
-        password = document.getElementsByName("password")[0].value
-        email = document.getElementsByName("email")[0].value
-        firstname = document.getElementsByName("firstname")[0].value
-        lastname = document.getElementsByName("lastname")[0].value
-
-        formData = {
-            username: username,
-            password: password,
-            email: email,
-            firstname: firstname,
-            lastname: lastname
-        }
-
-        request = new Request(signupUrl, {
-            method: 'post',
-            body: JSON.stringify(formData),
-            headers: {"Content-Type": "application/json"}
-        })
-
-        fetch(request)
-        .then(response => {
-            if (!response.ok) {
-                throw Error(response.statusText)
-            }
-
-            return response
-        }).then(response => response.json())
-        .then(data => {
-            console.log(data)
-            localStorage.setItem('user', data.data)
-            window.location = 'login.html'
-        }).catch(error => {
-            console.log(error)
-        })
-    }
+    
 </script>
 </body>
 </html>
