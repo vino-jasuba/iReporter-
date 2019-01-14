@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <script src="js/app.js"></script>
 </head>
-  <body>
+  <body onload="checkAuth()">
       <div>
         <nav class="p-1">
             <div class="container">
                 <div class="header-top black">
-                    <h1 class="">iReporter</h1>
+                    <h1 class=""><a href="index.html">iReporter</a></h1>
         
                     <div class="flex header-nav item-center">
                         <a class="black text-normal" href="dashboard.html">Dashboard</a>
@@ -32,32 +32,6 @@
 
         <div class="px-12 mb-6 mt-2">
             <div class="flex-container flex-column box-shadow-bg">
-                <div>
-                    <div id="profile_update" class="modal">
-                        <div class="card card-sm border-rounded-sm box-shadow-sm">
-                            <span onclick="hideModal('profile_update')" class="close" title="Close Modal">&times;</span>
-                            <form class="flex flex-column" action="#" method="POST">
-                
-                                <div class="form-control form-input">
-                                    <label class="font-monseratt fs-1" for="name">Name</label>
-                                    <input type="text" name="name">
-                                </div>
-                                <div class="form-control form-input">
-                                    <label class="font-monseratt fs-1" for="password">Email</label>
-                                    <input type="email" name="email">
-                                </div>
-                                <div class="form-control form-input">
-                                    <label for="profile_pic" class="font-monseratt fs-1">Profile Picture</label>
-                                    <input type="file">
-                                </div>
-                                <div class="form-control"> 
-                                    <button class="white w-full bg-black white tm border btn fs-1 font-monseratt">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="flex flex-start item-center m-4 border-bottom">
                     <div>
                         <img class="border-rounded-full m-1" src="images/file.jpg" alt="">
@@ -80,12 +54,6 @@
                             <div>
                                 <label for="role">Role: &nbsp;</label>
                                 <span id="user_role" class="font-monseratt">User</span>
-                            </div>
-                        </div>
-
-                        <div class="px-1">
-                            <div class="form-control"> 
-                                <button class="white w-full bg-black white tm border btn fs-1 font-monseratt" onclick="showModal('profile_update')">Update Profile</button>
                             </div>
                         </div>
                     </div>

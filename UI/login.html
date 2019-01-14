@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" media="screen" href="css/app.css" />
     <script src="js/app.js"></script>
 </head>
+
 <body>
     <div class="flex-container flex-column">
         <div class="card card-sm border-rounded-sm box-shadow-sm">
@@ -22,7 +24,7 @@
                     <label class="font-monseratt fs-1" for="password">Password</label>
                     <input type="password" name="password">
                 </div>
-                
+
                 <div class="flex footer">
                     <div class="form-control form-input">
                         <input type="checkbox" name="remember" id="remember">
@@ -31,47 +33,55 @@
 
                     <a class="bold blue-lighter font-monseratt fs-1" href="#">Forgot your password?</a>
                 </div>
-                <div class="form-control"> 
+
+                <div class="flex flex-column form-control">
+                    <a href="signup.html" class="bold blue-lighter font-monseratt text-center">Don't have an account?
+                        Sign Up</a>
+                </div>
+
+                <div class="form-control">
                     <button class="white w-full bg-black white tm border btn fs-1 font-monseratt">Log In</button>
                 </div>
             </form>
         </div>
     </div>
-<script>
-    function login(){
+    <script>
+        function login() {
 
-        username = document.getElementsByName("username")[0].value
-        password = document.getElementsByName("password")[0].value
-        loginUrl = baseUrl + 'auth/login'
+            username = document.getElementsByName("username")[0].value
+            password = document.getElementsByName("password")[0].value
+            loginUrl = baseUrl + 'auth/login'
 
-        formData = {
-            username: username,
-            password: password,
-        }
-
-        request = new Request(loginUrl, {
-            method: 'post',
-            body: JSON.stringify(formData),
-            headers: {"Content-Type": "application/json"}
-        })
-
-        fetch(request)
-        .then(response => {
-            if (!response.ok) {
-                throw Error(response.statusText)
+            formData = {
+                username,
+                password,
             }
 
-            return response
-        })
-        .then(response => response.json())
-        .then(data => {
-            localStorage.setItem('auth_token', data.access_token)
-            userProfile()
-            window.location = 'dashboard.html'
-        }).catch(error => {
-            console.log(error)
-        })
-    }
-</script>
+            request = new Request(loginUrl, {
+                method: 'post',
+                body: JSON.stringify(formData),
+                headers: { "Content-Type": "application/json" }
+            })
+
+            fetch(request)
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText)
+                    }
+
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                    localStorage.setItem('auth_token', data.access_token)
+                    loadUserProfile().then(data => {
+                        window.location = 'dashboard.html'
+                    })
+                }).catch(error => {
+                    console.log(error)
+                })
+        }
+    </script>
 </body>
+
 </html>

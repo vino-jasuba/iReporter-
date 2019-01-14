@@ -425,6 +425,10 @@ form {
      text-align: right;
  }
 
+ .text-center {
+    text-align: center;
+ }
+
  .text-lighter {
      font-weight: 300;
  }
