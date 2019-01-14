@@ -170,3 +170,22 @@ class Login(Resource, ApiResponse):
             })
 
         return self.respondUnauthorized(auth_failure_message)
+
+
+class Logout(Resource, ApiResponse):
+    """Represents a resource class used to logout users.
+    """
+
+    def __init__(self):
+        """Initialize resource with a reference to the model it should use."""
+        self.db = UserModel()
+
+    @jwt_required
+    def post(self):
+        """logout current user"""
+
+        # add token to black list
+        
+        return self.respond({
+            'message': 'Successfully logged out'
+        })

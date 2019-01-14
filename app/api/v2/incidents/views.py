@@ -4,9 +4,12 @@ from flask import request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from flask_mail import Message
+from minio import Minio
+from werkzeug.utils import secure_filename
 from app.api.utils.api_response import ApiResponse
 from app.api.v2.roles.roles import is_admin
 from app.api.v2.users.models import UserModel
+from app.api.v2.media.models import MediaModel
 from .models import IncidentModel
 from .schema import IncidentSchema, IncidentUpdateSchema
 
@@ -36,7 +39,8 @@ class Incident(Resource, ApiResponse):
     def patch(self, incident_id):
         """update resource with the given id."""
 
-        data, errors = IncidentUpdateSchema(exclude=['status']).load(request.get_json())
+        data, errors = IncidentUpdateSchema(
+            exclude=['status']).load(request.get_json())
 
         if errors:
             return self.respond({'message': 'failed to update record', 'errors': errors})
@@ -165,21 +169,6 @@ class IncidentManager(Resource, ApiResponse):
 
         incident = self.db.update(incident_id, data)
 
-        msg = "The status of your {} [\"{}\"] has been changed to {}".format(incident['incident_type'],
-                                                                             incident['title'], incident['status'])
-
-        # with current_app.app_context():
-        #     from app import mail
-        #     import settings
-        #     try:
-        #         user = UserModel().find_or_fail(incident['created_by'])
-        #         message = Message(msg, sender=os.getenv('MAIL_FROM'), recipients=[])
-        #         mail.send(message)
-        #         print(os.getenv('MAIL_FROM'))
-        #     except Exception as e:
-        #         print(os.getenv('MAIL_FROM'))
-        #         print(e)
-
         incident = IncidentSchema().dump(incident)[0]
         return self.respond({'data': incident, 'message': 'successfully updated record'})
 
@@ -210,3 +199,50 @@ class IncidentStatus(Resource, ApiResponse):
 
     def get(self):
         return IncidentModel.statuses
+
+
+class IncidentMedia(Resource, ApiResponse):
+    """Represents a Resource for handling media belonging to an incident
+    """
+
+    def __init__(self):
+        self.db = IncidentModel()
+
+    @jwt_required
+    def patch(self, incident_id):
+
+        if not os.path.isdir('uploads'):
+            os.mkdir('uploads')
+
+        file = request.files['file']
+        new_file_name = secure_filename(file.filename)
+        file.save(os.path.join('uploads/', new_file_name))
+
+        minioClient = Minio(
+            os.getenv('STORAGE_URL'),
+            access_key=os.getenv('MINIO_ACCESS_KEY'),
+            secret_key=os.getenv('MINIO_SECRET_KEY'),
+            secure=True
+        )
+
+        result = minioClient.fput_object(
+            os.getenv('MINIO_BUCKET'),
+            new_file_name,
+            os.path.join('uploads/', new_file_name),
+        )
+
+        incident = self.db.find_or_fail(incident_id)
+
+        media = MediaModel()
+
+        media = media.save({
+            'type': file.filename.rsplit('.', 1)[1].lower(),
+            'handle': new_file_name,
+            'object_id': str(result),
+            'created_by': 1,
+            'incident_id': incident['id'],
+        })
+
+        return self.respond({
+            'data': IncidentUpdateSchema().dump(incident)[0]
+        })
