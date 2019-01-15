@@ -1,6 +1,6 @@
 let locationObject = {}
 
-let baseUrl = 'http:127.0.0.1:5000/api/v2/'
+let baseUrl = 'https://vino-ireporter.herokuapp.com/api/v2/'
 
 function locationSearch () {
   let input = document.getElementsByName('location')[0]
