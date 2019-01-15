@@ -45,6 +45,6 @@ def create_app(config_name):
     app.register_blueprint(v2)
     app.config.from_object(app_config[config_name])
     JWTManager(app)
-    CORS(app, resources={r"*": {"origins": "https://vino-ireporter.herokuapp.com"}})
+    CORS(app, resources={r"*": {"origins": "https://vino-jasuba.github.io"}})
 
     return app
