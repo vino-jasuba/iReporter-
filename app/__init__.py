@@ -4,6 +4,7 @@ from psycopg2 import Error
 from flask_cors import CORS
 from app.api.v1 import version_one as v1
 from app.api.v2 import version_two as v2
+from app.api.v2.users.models import ExpiredTokenModel
 from instance.config import app_config
 from app.api.utils.databasemodel import ModelNotFound
 
@@ -36,6 +37,7 @@ def handle_error(error):
 
     return jsonify(response), status_code
 
+
 def create_app(config_name):
     """create a new instance of a flask app using given config.
     returns a reference to the created app."""
@@ -44,7 +46,11 @@ def create_app(config_name):
     app.register_blueprint(v1)
     app.register_blueprint(v2)
     app.config.from_object(app_config[config_name])
-    JWTManager(app)
+    jwt = JWTManager(app)
     CORS(app)
+
+    @jwt.token_in_blacklist_loader
+    def check_token_valid(token):
+        return ExpiredTokenModel().exists('jti', token['jti'])
 
     return app

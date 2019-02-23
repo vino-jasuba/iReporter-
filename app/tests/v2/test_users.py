@@ -57,10 +57,12 @@ class UserTest(unittest.TestCase):
             'email': 'another@email.com'
         })
         # act
-        response = self.client.post('api/v2/auth/signup', json=self.sample_user)
+        response = self.client.post(
+            'api/v2/auth/signup', json=self.sample_user)
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual(self.sample_user['username'], response.get_json()['data']['username'])
+        self.assertEqual(self.sample_user['username'], response.get_json()[
+                         'data']['username'])
         self.assertNotIn('password', response.get_json())
 
     def test_it_logs_in_user(self):
@@ -72,7 +74,21 @@ class UserTest(unittest.TestCase):
         # assert
         self.assertEqual(200, response.status_code)
         self.assertIn('access_token', response.get_json())
-        self.assertIn('refresh_token', response.get_json())
+
+    def test_it_logs_out_user(self):
+        # setup
+
+        # act
+        # send logout request for saved token
+        response = self.client.post('api/v2/auth/logout', headers=self.headers)
+        response_2 = self.client.post(
+            'api/v2/auth/logout', headers=self.headers)
+
+        # assert
+        # that user logged out
+        self.assertEqual(204, response.status_code)
+        # that subsequent use of token is unauthorized
+        self.assertEqual(401, response_2.status_code)
 
     def test_it_fetches_list_of_users(self):
         # setup
@@ -105,7 +121,8 @@ class UserTest(unittest.TestCase):
         # assert
         self.assertEqual(200, response.status_code)
         data = response.get_json()
-        self.assertEqual(self.sample_user['username'], data['data']['username'])
+        self.assertEqual(
+            self.sample_user['username'], data['data']['username'])
         self.assertEqual(404, failing.status_code)
         self.assertEqual('resource not found', failing.get_json()['message'])
         self.assertIn('status', data)
@@ -132,7 +149,8 @@ class UserTest(unittest.TestCase):
         self.sample_user.update({
             'email': 'not valid email'
         })
-        response = self.client.post('api/v2/auth/signup', json=self.sample_user, headers=self.headers)
+        response = self.client.post(
+            'api/v2/auth/signup', json=self.sample_user, headers=self.headers)
 
         # assert
         self.assertEqual(422, response.status_code)
@@ -150,11 +168,13 @@ class UserTest(unittest.TestCase):
             'password': 'Kab3!Eds'
         })
 
-        response = self.client.post('api/v2/auth/signup', json=self.sample_user)
+        response = self.client.post(
+            'api/v2/auth/signup', json=self.sample_user)
 
         # assert
         self.assertEqual(422, response.status_code)
-        self.assertEqual('email already in use', response.get_json()['message'])
+        self.assertEqual('email already in use',
+                         response.get_json()['message'])
 
     def test_registration_with_duplicate_username_fails(self):
         # setup
@@ -167,11 +187,13 @@ class UserTest(unittest.TestCase):
             'email': 'new@anewemail.com'
         })
 
-        response = self.client.post('api/v2/auth/signup', json=self.sample_user)
+        response = self.client.post(
+            'api/v2/auth/signup', json=self.sample_user)
 
         # assert
         # self.assertEqual(422, response.status_code)
-        self.assertEqual('username already taken', response.get_json()['message'])
+        self.assertEqual('username already taken',
+                         response.get_json()['message'])
 
     def test_it_validates_required_fields(self):
         # setup

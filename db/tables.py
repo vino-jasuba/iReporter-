@@ -46,6 +46,11 @@ create_table_queries = [
         FOREIGN KEY (created_by) REFERENCES users(id),
         FOREIGN KEY (incident_id) REFERENCES incidents(id)
     )
+    """,
+    """CREATE TABLE IF NOT EXISTS expired_tokens (
+        id SERIAL PRIMARY KEY,
+        jti VARCHAR(48) NOT NULL
+    )
     """
 ]
 
@@ -53,7 +58,8 @@ tables = [
     "roles",
     "users",
     "incidents",
-    "media"
+    "media",
+    "expired_tokens"
 ]
 
 

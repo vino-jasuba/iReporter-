@@ -27,6 +27,9 @@ class ApiResponse:
     def respondEntityCreated(self, data):
         return self.setStatusCode(201).respond(data)
 
+    def respondNoContent(self):
+        return self.setStatusCode(204).respond({})
+
     def respond(self, data):
         """Return 200 Ok response"""
         data.update({'status': self.getStatusCode()})

@@ -14,9 +14,20 @@ class UserModel(DatabaseModel):
         query = "INSERT INTO {} (firstname, lastname, username, email, password)" \
                 " VALUES (%s, %s, %s, %s, %s) RETURNING {}.*".format(self.table, self.table)
 
-        self.curr.execute(query, (firstname_, lastname_, username_, email_, password_))
+        self.curr.execute(query, (firstname_, lastname_,
+                                  username_, email_, password_))
         self.conn.commit()
         return self.curr.fetchone()
+
+
+class ExpiredTokenModel(DatabaseModel):
+    table = 'expired_tokens'
+
+    def save(self, data):
+        query = "INSERT INTO {} (jti) VALUES (%s)".format(self.table)
+        self.curr.execute(query, (data['jti'],))
+        self.conn.commit()
+        return {}
 
 
 if __name__ == "__main__":

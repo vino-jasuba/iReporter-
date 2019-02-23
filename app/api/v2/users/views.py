@@ -1,10 +1,10 @@
 from flask import request
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_raw_jwt
 from flask_restful import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.utils.api_response import ApiResponse
 from app.api.v2.roles.roles import is_admin
-from .models import UserModel
+from .models import UserModel, ExpiredTokenModel
 from .schema import UserSchema
 
 
@@ -84,7 +84,8 @@ class UserList(Resource, ApiResponse):
     def get(self):
         """fetch all users from the data store."""
 
-        data = UserSchema(many=True, exclude=['password']).dump(self.db.all())[0]
+        data = UserSchema(many=True, exclude=[
+                          'password']).dump(self.db.all())[0]
         return self.respond({'data': data})
 
 
@@ -145,7 +146,8 @@ class Login(Resource, ApiResponse):
         """login a user with given credentials"""
 
         # take advantage of UserSchema password side effect
-        data, errors = UserSchema(only=('username', 'password')).load(request.get_json())
+        data, errors = UserSchema(
+            only=('username', 'password')).load(request.get_json())
 
         auth_failure_message = 'Username or password not valid'
 
@@ -165,7 +167,6 @@ class Login(Resource, ApiResponse):
             return self.respond({
                 'access_token': create_access_token(UserSchema(exclude=['password']).dump(user)[0],
                                                     expires_delta=False),
-                'refresh_token': create_refresh_token(UserSchema(exclude=['password']).dump(user)[0]),
                 'message': 'successfully authenticated user'
             })
 
@@ -185,7 +186,6 @@ class Logout(Resource, ApiResponse):
         """logout current user"""
 
         # add token to black list
-        
-        return self.respond({
-            'message': 'Successfully logged out'
-        })
+        ExpiredTokenModel().save(get_raw_jwt())
+
+        return self.respondNoContent()
