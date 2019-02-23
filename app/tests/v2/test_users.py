@@ -36,8 +36,8 @@ class UserTest(unittest.TestCase):
         }
 
         self.auth = self.client.post('api/v2/auth/login', json={
-            'username': self.sample_user['username'],
-            'password': self.sample_user['password']
+            'username': 'vino',
+            'password': 'PaSsw0rd'
         })
 
         self.access_token = self.auth.get_json()['access_token']
