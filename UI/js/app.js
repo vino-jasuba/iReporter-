@@ -51,6 +51,7 @@ function renderTableContent (table, columns, collection) {
       if (i === 'roles') {
         tCell.innerHTML = item.isAdmin ? 'Admin' : 'User'
       }
+
     })
 
     let tControls = row.insertCell(-1)
@@ -73,6 +74,7 @@ function redirectIfAuth () {
     window.location.href = 'dashboard.html'
   }
 }
+
 
 function checkAuth () {
   if (authUser()) return
