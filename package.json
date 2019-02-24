@@ -1,0 +1,32 @@
+{
+  "name": "frontend-ireporter",
+  "version": "1.0.0",
+  "description": "ireporter challenge andela",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles UI/tests",
+    "build": "webpack --mode development ./UI/js/app.js --output ./UI/js/dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vino-jasuba/iReporter-.git"
+  },
+  "author": "_jasuba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vino-jasuba/iReporter-/issues"
+  },
+  "homepage": "https://github.com/vino-jasuba/iReporter-#readme",
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^23.6.0",
+    "puppeteer": "^1.12.2",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
+  }
+}

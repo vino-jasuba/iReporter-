@@ -12,17 +12,19 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/vanillatoasts.css">
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLhtMsy7x0mDj8a3UWU6KmDZ7jD10-vic&libraries=places"></script>
 <script src="js/app.js"></script>
+<script src="js/vanillatoasts.js"></script>
 </head>
-<body onload="bindModel()">
+<body onload="checkAuth(); updateNavBar(); bindModel()">
     <div>
         <nav class="p-1">
             <div class="container">
                 <div class="header-top black">
-                    <h1 class="">iReporter</h1>
+                    <h1 class=""><a href="index.html">iReporter</a></h1>
         
-                    <div class="flex header-nav item-center">
+                    <div id="nav_controls" class="flex header-nav item-center">
                         <a class="black text-normal" href="dashboard.html">Dashboard</a>
                         <a class="black text-normal" href="profile.html">Profile</a>
                         <a id="signup" class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
@@ -98,10 +100,6 @@
     </div>
 <script>
 
-    if (localStorage.getItem('auth_token')) {
-        document.getElementById('signup').style = 'display: none;'
-    }
-
    function bindModel() {
         incidentModel = JSON.parse(localStorage.getItem('current_incident'))
         console.log(incidentModel)
@@ -120,6 +118,9 @@
                 document.querySelector(`#${column} [value="` + incidentModel[column] + `"]`).selected = true;
             }
         })
+
+        // set location data to current model data
+        locationObject = incidentModel.location
     }
 
     function updateRecord() {
@@ -139,7 +140,7 @@
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            window.location = 'dashboard.html'
+            // window.location = 'dashboard.html'
         })
         .catch(errors => {
             console.log(errors)
@@ -157,9 +158,19 @@
         patch(url, {status: choice})
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            VanillaToasts.create({
+                text: data.message,
+                title: data.data.status,
+                type: "success",
+                timeout: 1000
+            });
         }).catch(errors => {
-            console.log(errors)
+            VanillaToasts.create({
+                title: "Whoops!",
+                text: "Permission denied!",
+                type: "error",
+                timeout: 1000
+            });
         })
     }
 </script>
