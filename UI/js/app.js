@@ -1,6 +1,7 @@
+
 let locationObject = {}
 
-let baseUrl = 'https://vino-ireporter.herokuapp.com/api/v2/'
+let baseUrl = 'http://localhost:5000/api/v2/'
 
 function locationSearch () {
   let input = document.getElementsByName('location')[0]
@@ -29,7 +30,7 @@ function locationSearch () {
 function renderTableContent (table, columns, collection) {
   table = document.getElementById(table)
   let counter = 1
-  for (item of collection) {
+  for (var item of collection) {
     let row = table.tBodies[0].insertRow(-1)
     row.classList.add('font-monseratt', 'fs-sm', 'grey-light')
 
@@ -45,6 +46,10 @@ function renderTableContent (table, columns, collection) {
 
       if (i === 'location') {
         tCell.innerHTML = item[i].city
+      }
+
+      if (i === 'roles') {
+        tCell.innerHTML = item.isAdmin ? 'Admin' : 'User'
       }
     })
 
@@ -63,10 +68,30 @@ function renderTableContent (table, columns, collection) {
   }
 }
 
+function redirectIfAuth () {
+  if (authUser()) {
+    window.location.href = 'dashboard.html'
+  }
+}
+
 function checkAuth () {
   if (authUser()) return
 
   window.location.href = 'login.html'
+}
+
+function updateNavBar () {
+  if (window.localStorage.getItem('auth_token')) {
+    document.getElementById('signup').style = 'display: none;'
+    var logoutNode = document.createElement('a')
+    logoutNode.id = 'logout'
+    logoutNode.classList.add('black', 'text-normal', 'border', 'signup-button', 'box-shadow', 'pointer')
+    logoutNode.innerHTML = 'Log Out'
+    logoutNode.onclick = () => {
+      logout()
+    }
+    document.getElementById('nav_controls').appendChild(logoutNode)
+  }
 }
 
 function authUser () {
@@ -74,8 +99,67 @@ function authUser () {
 }
 
 function logout () {
-  window.localStorage.removeItem('auth_user');
+  postData(baseUrl + 'api/auth/logout', {})
+  window.localStorage.clear()
   window.location = 'index.html'
+}
+
+function groupBy (collection, key) {
+  return collection.reduce(function (accumulator, currentItem) {
+    (accumulator[currentItem[key]] = accumulator[currentItem[key]] || []).push(currentItem)
+    return accumulator
+  }, {})
+}
+
+function statistics (collection = []) {
+  var resultSet = {
+    red_flag: {
+      pending: 0,
+      accepted: 0,
+      rejected: 0,
+      resolved: 0,
+      under_investigation: 0
+    },
+    intervention: {
+      pending: 0,
+      accepted: 0,
+      rejected: 0,
+      resolved: 0,
+      under_investigation: 0
+    }
+  }
+
+  var groupedIncidents = groupBy(collection, 'incident_type')
+
+  for (var incident in groupedIncidents) {
+    if (groupedIncidents.hasOwnProperty(incident)) {
+      var groupedStatuses = groupBy(groupedIncidents[incident], 'status')
+
+      for (var status in groupedStatuses) {
+        if (groupedStatuses.hasOwnProperty(status)) {
+          resultSet[incident][status] = groupedStatuses[status].length
+        }
+      }
+      console.log(groupedStatuses)
+    }
+  }
+
+  // set red flag stats
+  document.getElementById('pending_rf').innerHTML = resultSet.red_flag.pending
+  document.getElementById('accepted_rf').innerHTML = resultSet.red_flag.resolved
+  document.getElementById('rejected_rf').innerHTML = resultSet.red_flag.rejected
+  document.getElementById('resolved_rf').innerHTML = resultSet.red_flag.resolved
+  document.getElementById('under_investigation_rf').innerHTML = resultSet.red_flag.under_investigation
+
+  // set intervention stats
+  document.getElementById('pending_ir').innerHTML = resultSet.intervention.pending
+  document.getElementById('accepted_ir').innerHTML = resultSet.intervention.resolved
+  document.getElementById('rejected_ir').innerHTML = resultSet.intervention.rejected
+  document.getElementById('resolved_ir').innerHTML = resultSet.intervention.resolved
+  document.getElementById('under_investigation_ir').innerHTML = resultSet.intervention.under_investigation
+
+  // document.getElementById('resolved_rf').innerHTML = resultSet.red_flag.resolved
+  console.log(resultSet)
 }
 
 function loadUserProfile () {
@@ -83,7 +167,6 @@ function loadUserProfile () {
     .then(response => response.json())
     .then(data => {
       window.localStorage.setItem('auth_user', JSON.stringify(data))
-      return data
     })
 }
 

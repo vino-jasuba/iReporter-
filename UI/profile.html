@@ -14,14 +14,14 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <script src="js/app.js"></script>
 </head>
-  <body onload="checkAuth()">
+  <body onload="checkAuth(); updateNavBar()">
       <div>
         <nav class="p-1">
             <div class="container">
                 <div class="header-top black">
                     <h1 class=""><a href="index.html">iReporter</a></h1>
         
-                    <div class="flex header-nav item-center">
+                    <div id="nav_controls" class="flex header-nav item-center">
                         <a class="black text-normal" href="dashboard.html">Dashboard</a>
                         <a class="black text-normal" href="profile.html">Profile</a>
                         <a id="signup" class="black text-normal border signup-button box-shadow" href="signup.html">Sign Up</a>
@@ -34,7 +34,7 @@
             <div class="flex-container flex-column box-shadow-bg">
                 <div class="flex flex-start item-center m-4 border-bottom">
                     <div>
-                        <img class="border-rounded-full m-1" src="images/file.jpg" alt="">
+                        <img class="border-rounded-full m-1" src="https://via.placeholder.com/300/09f/fff.png" alt="">
                     </div>
         
                     <div class="h-full">
@@ -63,9 +63,11 @@
                             <a href="#" ><i class="far fa-flag"></i> &nbsp; Red Flags</a>
 
                             <div class="flex flex-column">
-                                <span id="accepted_rf" class="font-monseratt mt-1">Accepted: <strong>10</strong></span>
-                                <span id="rejected_rf" class="font-monseratt">Rejected: <strong>2</strong></span>
-                                <span id="pending_rf" class="font-monseratt">Under Investigation: <strong>1</strong></span>
+                                <span class="font-monseratt">Resolved: <strong id="resolved_rf">1</strong></span>
+                                <span class="font-monseratt">Pending: <strong id="pending_rf">1</strong></span>
+                                <span class="font-monseratt mt-1">Accepted: <strong id="accepted_rf">10</strong></span>
+                                <span class="font-monseratt">Rejected: <strong id="rejected_rf">2</strong></span>
+                                <span class="font-monseratt">Under Investigation: <strong id="under_investigation_rf">2</strong></span>
                             </div>
 
                         </div>
@@ -74,9 +76,11 @@
                             <a href="#"><i class="fas fa-hands-helping"></i> &nbsp; Interventions</a>
 
                             <div class="flex flex-column">
-                                <span id="accepted_ir" class="font-monseratt mt-1">Accepted: <strong>2</strong></span>
-                                <span id="rejected_ir" class="font-monseratt">Rejected: <strong>7</strong></span>
-                                <span id="pending_ir" class="font-monseratt">Under Investigation: <strong>0</strong></span>
+                                <span class="font-monseratt">Resolved: <strong id="resolved_ir">1</strong></span>
+                                <span class="font-monseratt">Pending: <strong id="pending_ir">0</strong></span>
+                                <span class="font-monseratt mt-1">Accepted: <strong id="accepted_ir">2</strong></span>
+                                <span class="font-monseratt">Rejected: <strong id="rejected_ir">7</strong></span>
+                                <span class="font-monseratt">Under Investigation: <strong id="under_investigation_ir">2</strong></span>
                             </div>
 
                         </div>
@@ -113,31 +117,21 @@
             document.getElementById('signup').style = 'display: none;'
         }
 
-        url = baseUrl + 'users/incidents'
-
-        get(url)
+        get(baseUrl + 'users/incidents')
         .then(response => response.json())
         .then(data => {
-            console.log(data.data)
             columns = ['id', 'title', 'incident_type', 'location', 'status', 'created_at']
             renderTableContent('user_records', columns, data.data)
-            userProfile()
+            loadUserProfile()
+            statistics(data.data)
         }).catch(error => {
             console.log(error)
         })
 
-        function statistics(collection) {
-            resultSet = {
-                accepted_rf: 0,
-                rejected_rf: 0,
-                pending_rf: 0,
-                accepted_ir: 0,
-                rejected_ir: 0,
-                pending_ir: 0
-            }
-
-            console.log(resultSet)
-        }
+        currentUser = JSON.parse(localStorage.auth_user)
+        document.getElementById('email').innerHTML = currentUser.email
+        document.getElementById('name').innerHTML = currentUser.firstname + ' ' + currentUser.lastname
+        document.getElementById('user_role').innerHTML = currentUser.isAdmin ? 'Admin': 'User'
       </script>
   </body>
 </html>

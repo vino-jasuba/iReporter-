@@ -15,12 +15,12 @@
     <script src="js/app.js"></script>
 </head>
 
-<body onload="updateNavigation()">
+<body>
     <div>
         <nav class="p-1">
             <div class="container">
                 <div class="header-top black">
-                    <h1 class="">iReporter</h1>
+                    <h1 class=""><a href="index.html">iReporter</a></h1>
 
                     <div class="flex header-nav item-center">
                         <a id="sign_up_button" class="black text-normal border signup-button box-shadow" href="login.html">Sign
@@ -36,23 +36,12 @@
                     <img src="images/fight.jpg" alt="">
                 </div>
                 <div class="">
-                    <p class="text-largest text-lighter font-monseratt">
-                        See corruption, Report immediately.
-                    </p>
+                    <p class="text-largest text-lighter font-monseratt">See corruption, Report immediately.</p>
                 </div>
             </div>
         </div>
     </div>
 </body>
-<script>
-    function updateNavigation() {
-        element = document.getElementById('sign_up_button')
-
-        if (authUser()) {
-            element.href = 'dashboard.html'
-            element.innerHtml = 'Dashboard'
-        }
-    }
-</script>
+<script></script>
 
 </html>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" media="screen" href="css/app.css" />
     <script src="js/app.js"></script>
 </head>
-<body>
+<body onload="redirectIfAuth()">
     <div class="flex-container flex-column">
         <div class="card card-sm border-rounded-sm box-shadow-sm">
             <form class="flex flex-column" method="POST" onsubmit="event.preventDefault(); signup()">
